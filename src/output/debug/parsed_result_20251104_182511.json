@@ -1,0 +1,74 @@
+{
+  "rows": [
+    {
+      "requirement_no": "SA-1",
+      "requirement_content": "SystemArchitect: 論理トレーサビリティの検証",
+      "evaluation": "△",
+      "compliance_location": "全体（特に 6.3.1 2), 6.3.3)",
+      "compliance_reason": "設計書内で「ルールブック」への言及は複数あるものの、どの要件が設計書のどの部分（章、機能、パラメータ）で実現されているかを体系的に示すトレーサビリティマトリクスが存在しない。そのため、全要件が設計に反映されているかの網羅的な検証が困難である。",
+      "correction_plan": "要件定義書またはルールブックに記載されている全要求項目と、本設計書の章・節・項目をマッピングするトレーサビリティマトリクスを巻末に添付する。例えば、「要件No.XXX：データ変換ルール」が「6.3.1 データコンバート方法」および「転記仕様yaml」で実現されている、といった対応関係を明確にする。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "SA-2",
+      "requirement_content": "SystemArchitect: 機能要件と非機能要件の分離と結合",
+      "evaluation": "×",
+      "compliance_location": "6.1 RowGroupSizeの取得, 6.3.1 DuckDBにキャシュー",
+      "compliance_reason": "性能に関わる非機能要件の閾値（例：メモリ500MB、行数1万行/10万行）が、処理ロジック内にハードコードされている。「現状の構造で推測した数値」「テスト&運用上で修正する必要かも」との記述もあり、設計としての根拠が弱く、保守性・運用性を著しく低下させる。",
+      "correction_plan": "メモリ閾値やバッチ行数などの性能に関するパラメータは、すべて設定ファイル（例: parameter_(ワークフローID).yaml）から読み込む仕様に変更する。設計書には、各パラメータのデフォルト値と、それが何を意味するのかを明記する。例：「BatchMemoryThresholdMB: 500 # バッチ処理をトリガーするメモリ使用量の閾値(MB)」",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "SA-3",
+      "requirement_content": "SystemArchitect: 指摘事項への準拠 (V6からのアーキテクチャ変更点)",
+      "evaluation": "×",
+      "compliance_location": "2.2 ログ初期化, 2.3 リネージの処理開始ログ, 8. 処理完了ログ出力 (V6設計書との比較)",
+      "compliance_reason": "V6設計書では共通コンポーネント「LogUtility」の利用が明記されていたが、V7ではその記述が消え、本ツール固有のログ処理が記述されている。これはアーキテクチャの一貫性を損なう設計変更（デグレード）であり、ログの標準化や横断的な解析を困難にする。変更理由も記載されていない。",
+      "correction_plan": "V6の設計に準拠し、共通コンポーネント「LogUtility」を使用してログ処理を実装する方針に戻す。初期化、処理開始・終了、エラーハンドリングのすべてをLogUtility経由で行うよう、関連する章（2.2, 2.3, 8）を全面的に書き換える。共通部品を使わない場合は、その妥当な理由を明記し、アーキテクトの承認を得ること。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-1",
+      "requirement_content": "QAManager: 処理ロジックの具体性評価 (WDT分析)",
+      "evaluation": "×",
+      "compliance_location": "6.3.1 Parquetファイル出力, 1) RowGroupKey によるグループ化処理",
+      "compliance_reason": "「DuckDB 上のテーブルに対し、RowGroupKeyでデータをグループ化します。グループ単位で再構成されたデータセットを、SQL を用いて取得・加工します」という記述は、処理（Do）の内容が極めて曖昧である。どのようなSQLで、どのように「再構成」「加工」するのかが不明なため、実装者が意図を汲み取れず、テスト担当者も検証ケースを作成できない。",
+      "correction_plan": "処理内容をコードが書けるレベルまで具体的に記述する。【ゴールデンケース】\n1. DuckDB上の中間テーブルに対し、以下のSQLを実行してグループ化する。\n   ```sql\n   SELECT RowGroupKey, COUNT(*) AS record_count, SUM(price) AS total_price FROM intermediate_table GROUP BY RowGroupKey;\n   ```\n2. 上記SQLの結果セットを1行ずつ処理し、グループ単位でParquetファイルに出力する。\n(※上記SQLはあくまで例。実際の集計・加工ロジックを記述すること)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-2",
+      "requirement_content": "QAManager: 用語と定義の明確化",
+      "evaluation": "×",
+      "compliance_location": "起動パラメータ, 2.2 ログ初期化, 8.2 logの例",
+      "compliance_reason": "同一の概念である「タスクID」の表記が、文書内で「--execute-task-id」（ケバブケース）、「execute_task_id」（スネークケース）、「ExecuteTaskId」（パスカルケース）と揺れており、一貫性がない。これは設定ミスや実装の混乱を招く原因となる。",
+      "correction_plan": "文書の冒頭に用語集を設け、主要なパラメータや用語の正式名称と表記規則を定義する。その上で、本文中のすべての表記を統一する。例えば、「本設計書ではタスクIDを `execute-task-id` と表記する」と定義し、すべての箇所を修正する。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-3",
+      "requirement_content": "QAManager: 異常系の網羅性",
+      "evaluation": "×",
+      "compliance_location": "3. リネージIDに基づいて..., 8.1 「データリネージ実行ログ」テーブルに...",
+      "compliance_reason": "エラーハンドリング方針に2つの重大な欠陥がある。第一に、「処理中断します」という記述だけでは、具体的な終了コードが不明でテストできない。第二に、「ExitCodeが最後のエラー情報を出力する」という仕様は、最初に発生した根本原因のエラーが後続の軽微なエラーで上書きされ、障害調査を著しく困難にする危険な設計である。",
+      "correction_plan": "1. すべてのエラーケースに対して、一意の終了コード（Exit Code）を割り当てる。巻末に「終了コード一覧」を追加する。\n2. エラーハンドリング方針を「最初に発生したエラーのコードで即時終了する（Fail Fast）」に変更する。ログにはすべてのエラーを記録するが、プログラムの終了コードは最も重要度の高い（通常は最初に発生した）エラーコードとすることを明記する。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-4",
+      "requirement_content": "QAManager: 処理ロジックの具体性評価 (WDT分析)",
+      "evaluation": "×",
+      "compliance_location": "6.1 RowGroupSizeの取得",
+      "compliance_reason": "バッチ処理のトリガー条件である「データが500MBのメモリを占有した場合」の記述が、テスト不可能なレベルで曖昧である。メモリ占有量をどのように計算するのか（オブジェクトのヒープサイズか、シリアライズ後のサイズか等）が定義されておらず、実行結果が予測不能。設計書自身が「推測した数値」と認めている点も問題である。",
+      "correction_plan": "メモリ量に基づく曖昧な条件を撤廃し、テスト可能で決定論的な仕様に変更する。最も望ましいのは、設定ファイルで指定された「行数」のみをトリガーとすることである。もしメモリ量をどうしても使いたい場合は、その測定方法を厳密に定義する。【ゴールデンケース】「バッファ内の全レコードについて、各カラムのデータ型に応じた推定サイズを合計し、その値が閾値を超えた場合に処理を実行する。文字列型はUTF-8エンコーディングでのバイト数、数値型は固定サイズとする」のように、計算ロジックを明記する。",
+      "response_status": "",
+      "response_method": ""
+    }
+  ]
+}

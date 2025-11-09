@@ -1,0 +1,64 @@
+{
+  "rows": [
+    {
+      "requirement_no": "SA-1",
+      "requirement_content": "SystemArchitect: 論理トレーサビリティの検証",
+      "evaluation": "△",
+      "compliance_location": "ドキュメント全体",
+      "compliance_reason": "単体テスト仕様書内の各テストケースが、どの要件定義や基本設計の項目を検証するためのものか、トレーサビリティが明記されていません。これにより、要件網羅性の確認が困難となっています。",
+      "correction_plan": "各テストケース（または大分類レベル）に、対応する要件定義書や設計書の要求Noを記載する欄を追加することを推奨します。例：「関連要求No: REQ-01-001」",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "SA-2",
+      "requirement_content": "SystemArchitect: 機能要件と非機能要件の分離と結合",
+      "evaluation": "△",
+      "compliance_location": "ドキュメント全体",
+      "compliance_reason": "テストケースは機能仕様や異常系の動作検証に集中しており、性能、リソース使用量、セキュリティといった非機能要件に関するテストケースが定義されていません。非機能要件がどのように担保されるかが本文書からは不明確です。",
+      "correction_plan": "非機能要件（性能目標、メモリ上限など）を定義し、それらを検証するためのテストケースを別途作成するか、本仕様書のスコープ外であることを明記することを推奨します。例えば、大容量のExcelファイルを処理した際の実行時間やメモリ使用量を測定するテストケースの追加が考えられます。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-1",
+      "requirement_content": "QAManager: 処理ロジックの具体性評価 (WDT分析)",
+      "evaluation": "×",
+      "compliance_location": "3-3 Excelファイルのデータ加工",
+      "compliance_reason": "データ加工の仕様が「前後トリム」のように抽象的に記述されており、具体的な処理内容が不明確です。「専用ブラグイン経由」とされていますが、そのプラグインの内部仕様が不明なため、テスト担当者は期待結果を正確に想定できません。",
+      "correction_plan": "【ゴールデンケース】\n加工ロジックを具体的に記述します。\n例：列「f013_supply_alt_parts_price_group」\n1. 値の前後の半角スペース、全角スペース、タブ文字をすべて除去する。\n2. 除去後の文字列が空文字列（長さ0）になった場合、半角スペース1文字を値として設定する。\n3. それ以外の場合は、除去後の文字列をそのまま値とする。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-2",
+      "requirement_content": "QAManager: 用語と定義の明確化",
+      "evaluation": "×",
+      "compliance_location": "全体（ログ内容の記述箇所）",
+      "compliance_reason": "期待される結果として記述されているログメッセージに、「xxx」というプレースホルダーが多用されています（例: 1-3-1-2）。これにより、テスト時に実際に出力されるべき動的な値（ファイルパスなど）が何であるかが不明確で、結果の正否を厳密に判定できません。",
+      "correction_plan": "プレースホルダー「xxx」を使用せず、テストデータに基づいた具体的な期待値を記述します。例：「指定されたパラメータファイル「/workspace/parameter/parameter_01M0013P001004.yml」が見つかりません。」のように、テストで使用する具体的なファイルパスを明記します。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-3",
+      "requirement_content": "QAManager: 異常系の網羅性",
+      "evaluation": "△",
+      "compliance_location": "3 データファイル(Excel)から読取とデータ加工",
+      "compliance_reason": "ファイルレベルの異常系（存在しない、0バイト、複数シート等）は網羅されていますが、データレベルの異常系に関するテストが不足しています。例えば、予期せぬデータ型（数値項目に文字列）、制御文字や特殊記号を含むデータなどが入力された場合の挙動が未定義です。",
+      "correction_plan": "データ内容に関する異常系テストケースを追加します。\n例：\n- テスト条件：数値項目「f013_parts_quantity」に文字列「abc」が含まれるExcelファイルを入力する。\n- 仕様：データ型変換エラーとして処理され、エラーハンドリング設定（resume/skip/terminate）に従って動作することを確認する。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-4",
+      "requirement_content": "QAManager: 用語と定義の明確化",
+      "evaluation": "×",
+      "compliance_location": "1-1-1-3, 1-1-2-3 等のログ内容",
+      "compliance_reason": "ログメッセージの記述に不自然な日本語や表記揺れが見られます。例えば、「W/F動くの場合」という表現は技術文書として不適切です。また、テスト仕様書(PDF 1)とエビデンス(PDF 2)で期待されるログメッセージが異なる箇所があり（例: 3-2-5-2）、どちらが正なのか不明です。",
+      "correction_plan": "全ログメッセージを精査し、日本語として正しく、一貫性のある表現に統一します。「W/F動くの場合」は「ワークフロー動作時」などに修正します。また、テスト仕様書とエビデンス間でメッセージの齟齬がある箇所は、最新の正しい仕様に統一し、ドキュメントを修正します。",
+      "response_status": "",
+      "response_method": ""
+    }
+  ]
+}

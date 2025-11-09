@@ -1,0 +1,50 @@
+Model: gemini-2.5-pro
+Response text: {
+  "rows": [
+    {
+      "requirement_no": "REQ-001",
+      "requirement_content": "0.4 非機能要件のテスト可能性（T4）: 性能（レスポンスタイム）、セキュリティ（権限、アクセス制御）、ユーザビリティ（画面表示崩れ）、可用性（障害・復旧）といった非機能要件が、テスト可能な形で観測可能になっているか。",
+      "evaluation": "〇",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 「■テスト観点」 > 「・性能テスト」",
+      "compliance_reason": "非対応理由（STのスコープ外であり、UTで実施済み）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "性能に関する主要な検証（例：コンポーネント単位のレスポンスタイム、メモリ効率）は、単体テスト（UT）フェーズにおいて実施済みである。STのスコープは、機能要件の充足とUTでカバーされなかった結合部分の検証に限定されており、STでの大規模な性能検証はスコープ外と判断する。"
+    },
+    {
+      "requirement_no": "REQ-002",
+      "requirement_content": "1.1 各テストケース（または業務シナリオ）において、「①前提条件」「②操作手順」「③期待結果」が具体的に記述され、因果関係が明確であるか。また、その前提条件が、要件定義書や外部設計書に記載された制約や仕様に基づいているか。",
+      "evaluation": "〇",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 「■テスト項目」 > Case01 > No.1-6",
+      "compliance_reason": "非対応理由（STのテスト粒度とメンテナンス性の観点から、現状の方式が妥当）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "AIの指摘（1.1）は、UT/ITレベルの詳細なテストケースを前提とした基準である。本仕様書は**ST（システムテスト）**であり、「シナリオ」（Case01〜04）ベースでの検証を主眼としている。STの粒度において、期待結果の詳細を『出力ファイル明細_Output』で一元管理する方式は、シナリオ全体の検証効率とメンテナンス性（二重管理の防止）の観点から妥当な判断である。"
+    },
+    {
+      "requirement_no": "REQ-003",
+      "requirement_content": "2.11 文体（「です・ます」体と「である」体）が統一されている",
+      "evaluation": "〇",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 全体",
+      "compliance_reason": "「対応方法」に基づき、v2設計書で修正（メモ書きの削除、文体の統一）が実行されたことを確認。",
+      "correction_plan": "(検証済)",
+      "response_status": "対応",
+      "response_method": "AIの指摘に基づき、ドキュメントの品質を向上させるため、以下の修正を実施する。1. 文書内に残存している「ケース1にで、仕様を書くべき...」等のメモ書きをすべて削除する。2. 文書全体の文体を「である」体、または期待結果の「〜こと」調に統一する。"
+    },
+    {
+      "requirement_no": "REQ-005",
+      "requirement_content": "4.7 テストの実行方法の明示: 各テストが手動実行か、自動化されたテストコードによる実行かが明確に区別・記述されているか",
+      "evaluation": "〇",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 「■テスト項目」",
+      "compliance_reason": "非対応理由（トリガー操作がテスト担当者にとって自明であり影響が軽微）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "本テストの対象は「GCSへのアップロード（トリガー）以降のArgo Workflow自動実行」の検証である。トリガーとなるファイル配置が手動であることはテスト担当者にとって自明であり、実行に支障はないため影響は軽微と判断する。"
+    }
+  ]
+}
+Candidates: 1
+Usage metadata: cache_tokens_details=None cached_content_token_count=None candidates_token_count=1179 candidates_tokens_details=None prompt_token_count=16095 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=16095
+)] thoughts_token_count=5616 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=22890 traffic_type=None

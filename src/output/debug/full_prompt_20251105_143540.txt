@@ -1,0 +1,5126 @@
+審査ステップ 
+1 事前準備：審査資料の整理 
+・今回のテスト仕様書、前回のテスト仕様書（初回は不要）設計書、BLレビューと議事録、3H社内レビュー、AIレビューと担当者判断を用意（選択可能） 
+・審査対象PDFに欠落・切れがないか目視で確認 
+・PDFファイルが複雑な場合は、無料のオンラインPDF結合ツールを使用して一括で結合し、マッジしてからアップロード。 https://www.ilovepdf.com/ 
+
+2 AIへの指示：審査条件を明示 
+・審査対象（設計書のファイル名）を明示 
+*前回テスト仕様書と今回テスト仕様書を区別 
+・使用する審査項目（第1〜第5項＋拡張項目第6〜第8項）を指定し、それぞれの審査項目に対応する資料をアップロードする 
+・必要であれば特定項目のみを絞って審査依頼も可能 
+・プロンプトの指示とプロンプトの内容を使用 
+
+3 出力データの整形と共有 
+・AI出力結果をGoogleスプレッドシート形式でエクスポート 
+
+4 審査結果の確認とレビュー 
+・AI出力の評価結果（〇／△／×）を確認 
+・不適合理由・修正案が妥当かを人の目でもチェック 
+・審査結果をGoogleスプレッドシートに反映し、フォーマットを整えた上で、現在審査がサイクル内のどの段階にあるのかを明示してください。 
+
+プロンプトの指示 
+添付されたテスト仕様書の内容について、以下の審査項目に基づいて漏れなく審査を実施してください。可能であれば、最大限の計算リソースで審査を行ってください。 
+以下の資料を参照してください： 
+
+【参考資料】 
+基本設計書：【ｘｘｘ基本設計書.pdf】 
+前回の単体テスト仕様書：【ｘｘｘ.pdf】 
+今回の単体テスト仕様書：【ｘｘｘ.pdf】 
+最新のルールブック：【ｘｘ₋ルールブック.pdf】 
+BLレビューと議事録：【BLレビューと議事録.ｐｄｆ】 
+3H社内レビュー ：【3H社内レビュー.ｐｄｆ  】 
+AIレビューと担当者判断：【AIレビューと担当者判断.ｐｄｆ】 
+
+【出力形式】  
+※ PDFファイルに切り取られた（途切れた）部分がある場合は、可能な限り内容をつなぎ合わせて審査してください。内容が判読できない場合は、その旨を明記してください。 
+※ 以下のすべての審査項目は、Googleスプレッドシートにエクスポート可能な形式で提示してください。 
+
+■ 評価結果表 
+まず、AIは以下の8列の形式で初期レビュー結果を出力します。この時点では、7列目と8列目は常に空欄です。 
+要求No｜要求内容｜評価（〇／△／×）｜適合/不適合箇所｜適合/不適合理由｜修正案｜対応有無｜対応方法／非対応理由 
+1.各要求Noについて、省略せずに、以下3つのいずれかの評価を使用して評価してください： 
+〇：適合 △：一部不適合 ×：不適合 
+2.同じ要求Noに複数の不適合がある場合は、行を分けて記載 
+3.「不適合箇所」は、セクション名・項番・キーワードなどで明確に特定すること 
+4.「不適合理由」は、分かりやすく簡潔にまとめてください。 
+5.「適合理由」は、任意で評価して構いませんが、今回が前回よりも改善されている場合は必ず評価を行ってください。  
+6.「修正案」は、具体的かつ明確に提示してください。 
+7.「対応有無」は、空欄にしてください。 
+8.「対応方法／非対応理由」は、空欄にしてください。 
+9.【拡張審査項目】の評価結果は、上記8点に加え、拡張審査項目の特有要件に従って出力してください。  
+
+プロンプトの内容 
+一、【審査項目と基準】 
+■ 0. テスト設計の前提と戦略に関する要求（テスト設計可能性の審査） 
+0.1 因子の分析と水準の定義（T1）: 各機能の可変条件（因子）と取りうる値（水準）が網羅的に洗い出され、同値クラス、境界値、デフォルト値、制約（排他・依存）が定義されているか。 
+0.2 決定表による論理網羅性（T2）: 複雑なビジネスルールが決定表などを用いてモデル化され、ルールの矛盾、冗長性、欠落が分析されているか。 
+0.3 組み合わせ戦略の妥当性（T3）: 因子が多い機能に対し、全網羅、ペアワイズ法、状態遷移網羅など、品質とコストのバランスを考慮した適切なテスト戦略が選択されているか。 
+0.4 状態モデルの明確性（T4）: 状態を持つ機能について状態遷移モデルが定義され、正常遷移、異常遷移、禁止遷移、タイムアウトなどが明確になっているか。 
+0.5 データ契約の検証可能性（T5）: 入出力データの各フィールドの制約（型、桁、精度、NULL可否、相関など）がテスト可能な形で定義されているか。 
+0.6 インターフェースの試験観点（T6）: APIやバッチ等のインターフェースについて、冪等性、再送、リトライ、レート制限といった、非機能要件を含むテスト観点が定義され、観測可能になっているか。 
+0.7 テスト不能箇所の特定（T7）: 仕様の不足などによりテスト設計が不可能な箇所が特定され、必要な追加情報がリストアップされているか。 
+
+■ 1. 論理構成と明確性に関する要求 
+1.1各テストケースにおいて、「①前提条件」「②操作手順」「③期待結果」が具体的に記述され、因果関係が明確であるか。また、その前提条件が、基本設計書に記載された設計制約や仕様に基づいているか。 
+1.2 曖昧な表現（例：「うまく」「必要に応じて」）が使われていないか。 
+1.3 期待結果が「どのように・何を確認すべきか」まで明確に記述され、目視／ログ／DBなどの検証手段が示されているか。 
+
+■ 2. 簡潔性に関する要求 
+2.1 専門用語・略語・外来語の使用が適切かつ一貫している 
+2.2 分かりやすい用語を使用している 
+2.3 評価に影響を与えない装飾語・曖昧な修飾表現が除去されている 
+2.4 テストケースは、読み手が一読して理解できる粒度・長さで説明されている 
+2.5 冗長な記述がない 
+2.6 重複表現がない 
+2.7 客観的に記述されている 
+2.8 説明的・叙述的に記述されている 
+2.9 受動態が使用されている 
+2.10 一人称表現（「我々」など）を使用していない 
+2.11 文体（「です・ます」体と「である」体）が統一されている 
+2.12 表記揺れ（例：「ログ出力」vs「ログの出力」）が存在しない 
+
+■ 3. 内容の整合性に関する要求 
+3.1 見出しに階層構造を用いているか 
+3.2 階層は4段階以内か 
+3.3 見出しの階層順に矛盾がないか 
+3.4 前後のテストケース間に論理矛盾がないか 
+3.5 見出しと本文の内容に技術的な齟齬がないか 
+3.6 重要なテストデータは図や表で整理されているか 
+3.7 セクションの分類構造が番号体系と対応しており、番号の抜け・重複・順序の乱れがないかを確認すること 
+3.8 「大分類・中分類・小分類・テスト条件・仕様」などの分類構造が、論理的かつ一貫しており、項目間の関係性に矛盾がないかを確認すること 
+
+■ 4. 品質の担保と再現性に関する要求 
+4.1 操作手順の再現性: 第三者でも実行可能なレベルで操作手順が記述されているか 
+4.2 検証手段の明示: UI、ログ、DB など、期待結果の検証手段が明示されているか 
+4.3 期待結果の明確性: 合否を客観的に判断できる定量的・具体的な記述となっているか 
+4.4 テスト資産の再利用性: スクリプト・テストデータが将来の再利用を考慮しているか 
+4.5 実行環境の明示: 対象バージョンや実行環境が明示されており、依存関係も考慮されているか 
+4.6 異常時ログ・エラー出力の検証: エラー発生時のログ出力／エラーメッセージが仕様通りに記録・表示されるか 
+4.7 テストの実行方法の明示: 各テストが手動実行か、自動化されたテストコードによる実行かが明確に区別・記述されているか 
+
+■ 5. テスト設計の妥当性と網羅性に関する要求 
+5.1 設計仕様との整合性と実装の反映: 基本設計書に記載された仕様をテストで網羅しているか。特に、テストケースが、仕様を実現するために実装された主要な処理や権限要求を正確に反映しているか 
+5.2 テスト観点の網羅性: 正常系／異常系・例外系／境界値がバランスよく含まれているか 
+5.3 テストデータの妥当性: 使用するテストデータが目的に応じて適切に選定されているか 
+5.4 テストの独立性: 各テストケースが他の実行順序に依存せず、単独で実行可能になっているか 
+5.5 入力仕様の網羅性: テスト対象への入力（設定ファイル等）自体の仕様（必須項目、データ型、許容値、フォーマット、大文字/小文字の区別等）に対するテスト観点が十分に考慮されているか 
+
+■ 6. ルールブックとの整合性に関する要求 
+6.1 【ルールブックとの全体整合性】：テスト仕様書全体（テストケース、テストデータ、期待結果を含む）が、共通ルールブックに定められた開発規約、命名規則、標準仕様と整合しているか。 
+6.2 【エラーハンドリングとログ出力の規約】：ルールブックに共通のエラーハンドリングやログ出力（例：フォーマット、必須出力項目、ログレベル）に関する規約が定義されている場合、テストケースがそれらの規約通りに動作することを網羅的に検証しているか。 
+6.3 【設定ファイルと起動パラメータの規約】：ルールブックに設定ファイル（例：命名規則、共通設定と個別設定の上書き順序）や起動パラメータに関する共通規約が定義されている場合、テストケースがその規約に従った動作を検証しているか。 
+6.4 【データ処理・変換の共通ルール】：ルールブックにデータ操作に関する共通ルール（例：データ型ごとの初期値、項目マッピングの標準方式、共通の変換・計算関数など）が定義されている場合、テストケースがそれらのルールに基づいたデータ処理を網羅的に検証しているか。 
+6.5 【アーキテクチャ・設計原則の規約】：ルールブックに、モジュール間の連携方法や責務の分離といったアーキテクチャ上の設計原則が定義されている場合、テストケースがその原則を遵守していることを（MockやStubの利用を通じて）検証しているか。 
+
+※第7～第9項は【拡張審査項目】であり、【BLレビューと議事録】／【3H社内レビュー  】／【AIレビューと担当者判断】 に基づくものです。 
+
+二、【拡張審査項目】 
+
+■7. BLレビューと議事録 
+内容 
+本項目は、前回のテスト仕様書に対して、BL（顧客）が実施したレビュー指摘とその議事録をまとめたもの。 
+審査方法 
+今回のテスト仕様書において、BLからの指摘内容に対応できているかを確認する。 
+出力形式 
+「審査項目と基準」に基づき、BLの指摘内容を審査観点として抽出し、【第6項】として評価する。 
+【要求No】：BLレビューまとめの番号順に並べてください  
+【要求内容】：BLレビューまとめの内容をそのままコピーしてください  
+【評価】：BLレビューまとめの内容に対応しているかどうかを確認し、今回のテスト仕様書について評価結果（〇／△／×）を記載してください  
+【適合/不適合理由】：対応済みである理由、または未対応の理由を分析して簡潔に記載してください  
+【修正案】：未対応の理由に基づき、具体的な修正案を提示してください  
+
+■ 8. 3H社内レビュー  
+内容 
+本項目は、前回のテスト仕様書に対して、BLレビュー後に、3H社内で実施された再レビューによる指摘内容のまとめ。 
+審査方法 
+今回のテスト仕様書において、社内からの指摘内容に対応できているかを確認する。 
+出力形式 
+「審査項目と基準」に基づき、社内指摘を審査観点として抽出し、【第7項】として評価する。 
+【要求No】：社内レビューまとめの番号順に並べてください  
+【要求内容】：社内レビューまとめの内容をそのままコピーしてください  
+【評価】：社内レビューまとめの内容に対応しているかどうかを確認し、今回のテスト仕様書について評価結果（〇／△／×）を記載してください  
+【適合/不適合理由】：対応済みである理由、または未対応の理由を分析して簡潔に記載してください  
+【修正案】：未対応の理由に基づき、具体的な修正案を提示してください  
+
+■9. AIレビューと担当者判断 
+内容 
+本項目は、前回の審査において「△」または「×」と評価された審査項目に対し、担当者が「非対応」と判断した場合、その対応方法または非対応理由について再審査を行う。 
+審査方法 
+① 担当者の理由が妥当な場合：前回評価の「△」または「×」を、今回評価の「〇」に変更してください。 
+【適合/不適合理由】には【AIによる承認理由】として、「非対応」の判断が妥当と見なされる根拠を具体的に記述してください。 
+以下の観点は一例であり、すべてのケースを網羅するものではない： 
+ビジネス上の判断：プロジェクトのスコープ外、コスト対効果に見合わない、納期優先など 
+技術的な制約：使用ライブラリの制限、プラットフォームの仕様などにより物理的な対応が困難 
+代替策の提示：指摘されたリスクに対して、設計変更以外の方法（例：運用カバー）で十分に対応可能 
+影響の軽微性：指摘内容が、システムの動作や品質に与える影響が極めて軽微である 
+② 担当者の理由が妥当でない場合：前回評価の「△」または「×」を今回も維持してください。 
+【適合/不適合理由】には【AIによる再反論】として、提示された理由が不十分である根拠や、依然として残るリスクを具体的に記述し、新たな修正案を提示してください。 
+出力形式 
+「審査項目と基準」に基づき、担当者の判断結果を審査観点として抽出し、【第8項】として評価を行ってください。 
+【要求No】：初回審査時のNoを含めて（括弧で）記載してください 
+【要求内容】：初回と同一の内容を記載してください 
+【評価】：今回の評価結果（〇／△／×）を記載してください 
+【適合/不適合理由】：【AIによる承認理由】または【AIによる再反論】として記述してください 
+【修正案】：担当者が前回の修正案に対応していない場合は前回の修正案を維持し、意見がある場合はその内容を踏まえた新たな修正案を提示してください 
+
+# PDF Content (Markdown format):
+
+
+================================================================================
+ドキュメント: (No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル_エビデンス_V2.pdf (PDF 1)
+ファイル名: (No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル_エビデンス_V2.pdf
+================================================================================
+
+※　テスト結果を詳細に記載出来ない　またはハードコピーなどが
+　ある場合はシートを追加し、資料列にシート名を記載します。
+
+１回目
+判定
+
+実施日
+
+担当
+
+2回目
+判定実施日
+
+3回目
+担当 判定実施日
+
+担当
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxエビデンス
+
+システム名
+f013カタログ部品データ作成
+
+■エビデンスケースＮｏ
+
+№パターン№
+
+　入力値あるいは操作
+ツール起動
+
+f013WEBカタログ部品情報EXCELファイル
+
+部品一覧Excel 累積作成
+
+　期待される結果
+テストコード
+
+結果
+
+起動時のパラメータ確認
+リネージグループID(-g)
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+確認事項なく、引き続き処理
+
+なし
+
+1
+
+1-1
+1-1-1
+1-1-1-1
+
+1-1-1-2
+
+1-1-1-3
+
+1-1-2-1
+
+1-1-2-2
+
+1-1-2-3
+
+1-1-3-1
+
+1-1-3-2
+
+1-1-3-3
+
+1-1-5-2
+
+1-1-5-3
+
+1-1-6-1
+
+1-1-6-2
+
+1-1-6-3
+
+1-1-6-4
+
+1-1-6-5
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+なし
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-g(--lineage-group-id)」が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-g(--lineage-group-id)」が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id -g "" -s lineageSubGroupId -i input-path -t task_id
+
+なし
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-g(--lineage-group-id)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-g(--lineage-group-id)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+OK
+
+####### TH.尚
+
+1-1-2
+
+リネージサブグループID(-s)
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+確認事項なく、引き続き処理
+
+なし
+
+-
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id -g lineage-group-id  lineageSubGroupId -i input-path -t task_id
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-s(--lineage-subgroup-id)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-s(--lineage-subgroup-id)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id -g lineage-group-id -s "" -i input-path -t task_id
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-s(--lineage-subgroup-id)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-s(--lineage-subgroup-id)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+OK
+
+####### TH.尚
+
+1-1-3
+
+GCPプロジェクトID(-p)
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+確認事項なく、引き続き処理
+
+なし
+
+-
+
+acumulate-file-loader.exe -nworkflow-namespace -w workflow-name  project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-p(--project-id)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-p(--project-id)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p "" -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-p(--project-id)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-p(--project-id)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+OK
+
+####### TH.尚
+
+1-1-4 ネームスペース(-n)
+1-1-4-1
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+確認事項なく、引き続き処理
+
+1-1-4-2
+
+acumulate-file-loader.exe  workflow-namespace -w workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-n(--workflow-namespace)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-n(--workflow-namespace)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+1-1-4-3
+
+acumulate-file-loader.exe -n "" -w workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+なし
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-n(--workflow-namespace)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-n(--workflow-namespace)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+OK
+
+####### TH.尚
+
+1-1-5 ワークフロー名(-w)
+1-1-5-1
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+確認事項なく、引き続き処理
+
+なし
+
+-
+
+acumulate-file-loader.exe -n workflow-namespace  workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-w(--workflow-name)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-w(--workflow-name)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+
+acumulate-file-loader.exe -n workflow-namespace -w "" -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-w(--workflow-name)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+必須オプション  「-w(--workflow-name)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+OK
+
+1-1-6
+
+Optional  入力パス(-i) と/処理ユニットのセット(--input-list-file)/処理対象ファイル選択（--input-file-selector ）
+
+acumulate-file-loader.exe -S name-space -n workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId  -t task_id -i input-path
+acumulate-file-loader.exe -S name-space -n workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId  -t task_id --input-list-file json-file
+acumulate-file-loader.exe -S name-space -n workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId  -t task_id --input-file-selector json-file
+acumulate-file-loader.exe -S name-space -n workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId  -t task_id
+
+確認事項なく、引き続き処理
+確認事項なく、引き続き処理
+確認事項なく、引き続き処理
+確認事項なく、引き続き処理
+
+なし
+なし
+なし
+
+acumulate-file-loader.exe -S name-space -n workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId  -t task_id -i input-file input-list-file input-file-list --input-file-selector input-file-selector
+
+ExitCode：255
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+コンソールにメッセージを出力して異常終了
+オプション 「-i/--input-file」,「--input-list-file」,「--input-file-selector」は同時に指定できません。どちらか一方のみを指定してください。
+オプション 「-i/--input-file」,「--input-list-file」,「--input-file-selector」は同時に指定できません。どちらか一方のみを指定してください。
+
+1-1-7 それ以外のオプションが入ってる場合
+1-1-7-1
+
+acumulate-file-loader.exe -n workflow-namespace -w workflow-name -p project-id -g lineage-group-id -s lineageSubGroupId -i input-path -t task_id -A ""
+
+なし
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+不明なオプション「A」が指定されました。入力パラメータを確認してください。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+不明なオプション「A」が指定されました。入力パラメータを確認してください。
+
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+なし
+
+実施結果
+
+-
+
+-
+
+-
+-
+-
+-
+
+データベース接続
+
+接続成功
+
+接続失敗
+
+1-2
+
+1-2-1
+
+1-2-2
+
+1-2-2-1
+
+1-2-2-2
+
+1-2-2-3
+
+1-2-2-4
+
+1-2-2-5
+
+1-2-2-6
+
+1-2-2-7
+
+・環境変数が存在しません
+・データベースのユーザー名が正しくありません
+・データベースのパスワードが正しくありません
+・ホスト名/IPアドレスが間違っています
+・ポート番号が不正です
+・ネットワーク接続が不安定です
+・データベースサービスが起動していません
+
+1-3
+
+ファイル存在チェック
+
+1-3-1 パラメータYamlファイル存在チェック
+※ parameter_(workflowId).yml
+存在する
+
+1-3-1-1
+
+1-3-1-2
+
+存在しない
+
+1-3-2 転記仕様Yamlファイル存在チェック
+
+1-3-2-1
+
+※ transform_spec_(lineageId).yml]
+存在する
+
+1-3-2-2
+
+存在しない
+
+2
+
+現在のプログラムで実行されている LineageId の特定および設定内容のチェック
+※起動時のパラメータ
+
+2-1
+2-1-1
+
+2-1-2
+
+-n：market-vehicle-data
+-w：workflow-01m0013p001004-znp7k-c7r4k
+
+プロセスIDとタスクIDをもとにリネージ情報を取得
+
+一つだけリネージを取得する
+
+プロセスID：acumulate-file-loader
+タスクID：acumulate-file-loader-1
+
+複数のリネージを取得する
+
+プロセスID：acumulate-file-loader
+タスクID：acumulate-file-loader-4
+
+なし
+なし
+なし
+なし
+なし
+なし
+なし
+なし
+なし
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+
+確認事項なく、引き続き処理
+
+-
+
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+
+確認事項なく、引き続き処理
+
+-
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+指定されたパラメータファイル「/workspace/parameter\parameter_01M0013P001004.yml」が見つかりません。
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+指定されたパラメータファイル「/workspace/parameter\parameter_01M0013P001004.yml」が見つかりません。
+
+確認事項なく、引き続き処理
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+-
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：転記仕様ファイル「/workspace/transform\transform_spec_130020.yml」が見つかりません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：転記仕様ファイル「/workspace/transform\transform_spec_130020.yml」が見つかりません。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：転記仕様ファイル「/workspace/transform\transform_spec_130020.yml」が見つかりません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：転記仕様ファイル「/workspace/transform\transform_spec_130020.yml」が見つかりません。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：転記仕様ファイル「/workspace/transform\transform_spec_130020.yml」が見つかりません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：転記仕様ファイル「/workspace/transform\transform_spec_130020.yml」が見つかりません。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 1-3-2-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 1-3-2-2 を参照。
+
+「使用データ」シート参照（Case 2-1） なし
+
+確認事項なく、引き続き処理
+
+-
+
+-
+
+-
+
+-
+
+「使用データ」シート参照（Case 2-1） なし
+
+ExitCode：255
+異常終了
+
+コンソールログ出力
+
+ExitCode：255
+異常終了
+
+コンソールログ出力
+
+OK
+
+####### TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」とタスクID「acumulate-file-loader-4」のリネージ定義が重複しています。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」とタスクID「acumulate-file-loader-4」のリネージ定義が重複しています。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」とタスクID「acumulate-file-loader-4」のリネージ定義が重複しています。
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」とタスクID「acumulate-file-loader-4」のリネージ定義が重複しています。
+
+クラウドログ出力
+
+-
+
+OK
+
+-
+
+-
+
+####### TH.尚
+
+-
+
+OK
+
+-
+
+-
+
+####### TH.尚
+
+-
+
+OK
+
+-
+
+-
+
+####### TH.尚
+
+-
+
+OK
+
+-
+
+-
+
+####### TH.尚
+
+-
+
+OK
+
+-
+
+-
+
+####### TH.尚
+
+####### TH.尚
+
+-
+-
+-
+-
+
+-
+-
+-
+-
+
+####### TH.尚
+
+####### TH.尚
+
+-
+
+-
+
+####### TH.尚
+####### TH.尚
+####### TH.尚
+####### TH.尚
+####### TH.尚
+####### TH.尚
+####### TH.尚
+
+-
+
+-
+
+####### TH.尚
+
+-
+
+-
+
+####### TH.尚
+
+-
+-
+-
+-
+
+OK
+
+OK
+
+-
+
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+
+-
+
+OK
+
+-
+
+OK
+
+2-1-3
+
+リネージを取得しない
+
+「使用データ」シート参照（Case 2-1） なし
+
+プロセスID：acumulate-file-loader
+タスクID：acumulate-file-loader-5
+
+ExitCode：255
+異常終了
+
+コンソールログ出力
+
+ExitCode：255
+異常終了
+
+コンソールログ出力
+
+OK
+
+####### TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」とタスクID「acumulate-file-loader-4」のリネージ定義が重複しています。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」とタスクID「acumulate-file-loader-4」のリネージ定義が重複しています。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-1-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-1-2 を参照。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」・タスクID「acumulate-file-loader-5」に該当するリネージ定義は見つかりません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」・タスクID「acumulate-file-loader-5」に該当するリネージ定義は見つかりません。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」・タスクID「acumulate-file-loader-5」に該当するリネージ定義は見つかりません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」・タスクID「acumulate-file-loader-5」に該当するリネージ定義は見つかりません。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」・タスクID「acumulate-file-loader-5」に該当するリネージ定義は見つかりません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：パラメータYAML「parameter_01M0013P001004.yml」で、プロセスID「acumulate-file-loader」・タスクID「acumulate-file-loader-5」に該当するリネージ定義は見つかりません。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-1-3 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-1-3 を参照。
+
+2-2
+
+専用プラグインのチェック
+
+2-2-1 専用プラグイン指定あり  ※「リネージプロセス管理」の「拡張機能情報1（extend_function_info_1）」
+
+lineage_summary:
+ - lineage_id: "130020"
+　...
+　extend_function_info_1: "f013-parts-list-excel-parser.dll"
+
+指定された「f013-parts-list-excel-parser.dll」が存在する
+
+指定された「f013-parts-list-excel-parser.dll」が存在しない ※システム系エラー（エラーハンドリングと関係ない）
+
+なし
+なし
+
+2-2-1-1
+
+2-2-1-2
+
+確認事項なく、引き続き処理
+ExitCode：255
+異常終了
+コンソールログ出力
+
+-
+ExitCode：255
+異常終了
+コンソールログ出力
+
+-
+OK
+
+-
+####### TH.尚
+
+-
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：データリネージプロセス管理で、リネージID「130020」 の拡張機能情報1(extend_function_info_1)で指定されたDLLファイル「f013-parts-list-excel-parser.dll」が見つかりません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：データリネージプロセス管理で、リネージID「130020」 の拡張機能情報1(extend_function_info_1)で指定されたDLLファイル「f013-parts-list-excel-parser.dll」が見つかりません。
+
+ローカルログ出力
+
+ローカルログ出力
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：データリネージプロセス管理で、リネージID「130020」 の拡張機能情報1(extend_function_info_1)で指定されたDLLファイル「f013-parts-list-excel-parser.dll」が見つかりません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：データリネージプロセス管理で、リネージID「130020」 の拡張機能情報1(extend_function_info_1)で指定されたDLLファイル「f013-parts-list-excel-parser.dll」が見つかりません。
+
+クラウドログ出力
+
+クラウドログ出力
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxエビデンス
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：データリネージプロセス管理で、リネージID「130020」 の拡張機能情報1(extend_function_info_1)で指定されたDLLファイル「f013-parts-list-excel-parser.dll」が見つかりません。
+データリネージ実行ログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：データリネージプロセス管理で、リネージID「130020」 の拡張機能情報1(extend_function_info_1)で指定されたDLLファイル「f013-parts-list-excel-parser.dll」が見つかりません。
+
+データリネージ実行ログ出力
+
+2-2-2 専用プラグイン指定なし
+
+※システム系エラー（エラーハンドリングと関係ない）
+
+なし
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+OK
+
+####### TH.尚
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-2-1-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-2-1-2 を参照。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：「データリネージプロセス管理」で、当リネージID「130020」の「拡張機能情報1(extend_function_info_1)」が未設定です。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：「データリネージプロセス管理」で、当リネージID「130020」の「拡張機能情報1(extend_function_info_1)」が未設定です。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：「データリネージプロセス管理」で、当リネージID「130020」の「拡張機能情報1(extend_function_info_1)」が未設定です。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：「データリネージプロセス管理」で、当リネージID「130020」の「拡張機能情報1(extend_function_info_1)」が未設定です。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：「データリネージプロセス管理」で、当リネージID「130020」の「拡張機能情報1(extend_function_info_1)」が未設定です。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：「データリネージプロセス管理」で、当リネージID「130020」の「拡張機能情報1(extend_function_info_1)」が未設定です。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-2-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-2-2 を参照。
+
+2-3
+
+入力ファイル名チェック
+
+2-3-1 入力ファイル名が命名規則に従っているかのチェック
+
+2-3-1-2
+
+Excelファイルのフルパスがリソース管理表で定義された命名規則に適合している
+
+なし
+
+確認事項なく、引き続き処理
+
+-
+
+2-3-1-2
+
+Excelファイルのフルパスがリソース管理表で定義された命名規則に適合していない  ※システム系エラー（エラーハンドリングと関係ない）
+    命名規則：f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx
+
+なし
+
+    Excelファイル:f013_f0002_035130_FDA60A_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx
+
+ExitCode：244
+異常終了
+コンソールログ出力
+
+ExitCode：244
+異常終了
+コンソールログ出力
+
+-
+
+OK
+
+-
+
+-
+
+####### TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://storage.googleapis.com/b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60A_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」は、当リネージの命名規則「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/!BL_CATALOG_NO!/!OBTAIN_YYYYMM!/f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に適合しません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://storage.googleapis.com/b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60A_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」は、当リネージの命名規則「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/!BL_CATALOG_NO!/!OBTAIN_YYYYMM!/f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に適合しません。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://storage.googleapis.com/b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60A_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」は、当リネージの命名規則「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/!BL_CATALOG_NO!/!OBTAIN_YYYYMM!/f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に適合しません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://storage.googleapis.com/b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60A_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」は、当リネージの命名規則「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/!BL_CATALOG_NO!/!OBTAIN_YYYYMM!/f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に適合しません。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://storage.googleapis.com/b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60A_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」は、当リネージの命名規則「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/!BL_CATALOG_NO!/!OBTAIN_YYYYMM!/f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に適合しません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://storage.googleapis.com/b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60A_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」は、当リネージの命名規則「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/!BL_CATALOG_NO!/!OBTAIN_YYYYMM!/f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に適合しません。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-3-1-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 2-3-1-2 を参照。
+
+確認事項なく、引き続き処理
+
+ExitCode：253
+
+異常終了
+
+コンソールログ出力
+
+-
+
+ExitCode：253
+
+異常終了
+
+コンソールログ出力
+
+-
+
+NG
+
+-
+
+-
+
+####### TH.尚
+
+OK ######## TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：リソース管理テーブルにて、リネージID「130020」で指定されたスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、列「f013_acquisition_date」が存在しません。ご確認ください。
+
+ログ内容：リソース管理テーブルにて、リネージID「130020」で指定されたスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、列「f013_acquisition_date」が存在しません。ご確認ください。
+
+ログ内容：当リネージID「130020」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、必須項目「f013_acquisition_date」がないです。
+
+ログ内容：当リネージID「130020」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、必須項目「f013_acquisition_date」がないです。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：リソース管理テーブルにて、リネージID「130020」で指定されたスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、列「f013_acquisition_date」が存在しません。ご確認ください。
+
+ログ内容：リソース管理テーブルにて、リネージID「130020」で指定されたスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、列「f013_acquisition_date」が存在しません。ご確認ください。
+
+ログ内容：当リネージID「130020」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、必須項目「f013_acquisition_date」がないです。
+
+ログ内容：当リネージID「130020」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、必須項目「f013_acquisition_date」がないです。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：リソース管理テーブルにて、リネージID「130020」で指定されたスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、列「f013_acquisition_date」が存在しません。ご確認ください。
+
+ログ内容：リソース管理テーブルにて、リネージID「130020」で指定されたスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、列「f013_acquisition_date」が存在しません。ご確認ください。
+
+ログ内容：当リネージID「130020」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、必須項目「f013_acquisition_date」がないです。
+
+ログ内容：当リネージID「130020」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」に、必須項目「f013_acquisition_date」がないです。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-1-1-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-1-1-2 を参照。
+
+3
+
+データファイル(Excel)から読取とコンバート（専用ブラグイン経由）
+
+※起動時のパラメータ
+
+-n：market-vehicle-data
+-w：workflow-01m0013p001004-znp7k-c7r4k
+
+3-1
+
+入力Schemaファイルチェック
+
+3-1-1 必須項目チェック
+
+3-1-1-1
+
+3-1-1-2
+
+必須項目「項目ID（item_id）」が 入力スキーマに存在する場合
+
+必須項目「項目ID（item_id）」が 入力スキーマに存在しない場合
+
+3-2
+
+Excelファイルチェック
+
+3-2-1 エクセルファイルのバージョン
+3-2-1-1
+
+2003バージョンのExcelファイル
+
+3-2-1-2
+
+2007バージョンのExcelファイル
+
+3-2-2 入力ファイルの命名規則内のマクロ変数の存在チェック
+
+3-2-2-1
+
+入力ファイルの命名規則内のマクロ変数が存在する
+
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+
+f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx
+
+3-2-2-2
+
+入力ファイルの命名規則内のマクロ変数が存在しない
+
+f013_f0002_035130_FDA60_B21S003_11_11.110_parts_20250101_ver0001.xlsx
+
+3-2-3 入力ファイル命名規則に必須のマクロ変数が含まれているかのチェック
+
+3-2-3-1
+
+ファイルのフルパスにマクロ変数の対応値が存在する
+
+なし
+
+なし
+
+確認事項なく、引き続き処理
+
+確認事項なく、引き続き処理
+
+3-2-3-2
+
+ファイルのフルパスにマクロ変数の対応値が存在しない  ※システム系エラー（エラーハンドリングと関係ない） なし
+    命名規則：f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx
+
+    Excelファイル:f013_f0002_035130_FDA60_B21S003_11_11.110_parts_20250101_ver0001.xlsx
+
+ExitCode：252
+異常終了
+コンソールログ出力
+
+ExitCode：252
+異常終了
+コンソールログ出力
+
+確認事項なく、引き続き処理
+
+確認事項なく、引き続き処理
+
+確認事項なく、引き続き処理
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+OK
+
+####### TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 当リネージID「130020」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に必須マクロ変数「FS_CAR_NAME_CD」がないです。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 当リネージID「130020」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に必須マクロ変数「FS_CAR_NAME_CD」がないです。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 当リネージID「130020」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に必須マクロ変数「FS_CAR_NAME_CD」がないです。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 当リネージID「130020」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に必須マクロ変数「FS_CAR_NAME_CD」がないです。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 当リネージID「130020」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に必須マクロ変数「FS_CAR_NAME_CD」がないです。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 当リネージID「130020」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_parts_!ACQUISITION_YYYYMMDD!_ver0001.xlsx」に必須マクロ変数「FS_CAR_NAME_CD」がないです。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-3-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-3-2 を参照。
+
+3-2-4 入力ファイルの存在チェック
+3-2-4-1
+
+入力ファイルが存在します
+
+3-2-4-2
+
+入力ファイルが存在しません
+
+※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+3-2-5
+
+3-2-5-1
+
+Excelファイル 0 バイトチェック
+正常なExcelファイルの場合
+
+3-2-5-2
+
+0バイトの Excelファイルの場合
+
+※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+なし
+
+なし
+
+なし
+
+なし
+
+確認事項なく、引き続き処理
+
+ExitCode：245
+
+異常終了
+
+コンソールログ出力
+
+-
+
+ExitCode：245
+
+異常終了
+
+コンソールログ出力
+
+-
+
+OK
+
+-
+
+-
+
+####### TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が見つかりません。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が見つかりません。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が見つかりません。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が見つかりません。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が見つかりません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が見つかりません。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-4-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-4-2 を参照。
+
+確認事項なく、引き続き処理
+
+ExitCode：243
+
+異常終了
+コンソールログ出力
+
+-
+
+ExitCode：243
+
+異常終了
+コンソールログ出力
+
+-
+
+NG
+
+-
+
+-
+
+####### TH.尚
+
+OK ######## TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理できないです。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理できないです。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理を実行できません。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理を実行できません。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理できないです。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理できないです。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理を実行できません。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理を実行できません。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理できないです。
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理を実行できません。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理できないです。
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」が0バイトで、累積処理を実行できません。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-5-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-5-2 を参照。
+
+3-2-6
+
+シート数確認
+
+3-2-6-1
+
+3-2-6-2
+
+Excelファイルに1つのシートがあります
+Excelファイルに複数のシートがあります※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+なし
+なし
+
+確認事項なく、引き続き処理
+ExitCode：242
+異常終了
+
+コンソールログ出力
+
+-
+ExitCode：242
+異常終了
+
+コンソールログ出力
+
+-
+OK
+
+-
+####### TH.尚
+
+-
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」に複数のシートが存在します。1つシートのExcelファイルのみ処理可能です。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」に複数のシートが存在します。1つシートのExcelファイルのみ処理可能です。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」に複数のシートが存在します。1つシートのExcelファイルのみ処理可能です。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」に複数のシートが存在します。1つシートのExcelファイルのみ処理可能です。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」に複数のシートが存在します。1つシートのExcelファイルのみ処理可能です。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」に複数のシートが存在します。1つシートのExcelファイルのみ処理可能です。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-6-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-6-2 を参照。
+
+3-2-7
+
+データファイルの列チェック
+
+3-2-7-1
+
+3-2-7-2
+
+Excelファイルの列数は正しいです
+Excelファイルの列数が正しくありません※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+なし
+
+なし
+
+確認事項なく、引き続き処理
+ExitCode：242
+
+異常終了
+
+コンソールログ出力
+
+-
+ExitCode：242
+
+異常終了
+
+コンソールログ出力
+
+-
+OK
+
+-
+####### TH.尚
+
+-
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容： 対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の項目数「20」が、プラグインf013WEBカタログ部品情報excelファイル解析で処理可能項目数「21」と一致しません。
+
+ログ内容： 対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の項目数「20」が、プラグインf013WEBカタログ部品情報excelファイル解析で処理可能項目数「21」と一致しません。
+
+ローカルログ出力
+
+ローカルログ出力
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容： 対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の項目数「20」が、プラグインf013WEBカタログ部品情報excelファイル解析で処理可能項目数「21」と一致しません。
+
+ログ内容： 対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の項目数「20」が、プラグインf013WEBカタログ部品情報excelファイル解析で処理可能項目数「21」と一致しません。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容： 対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の項目数「20」が、プラグインf013WEBカタログ部品情報excelファイル解析で処理可能項目数「21」と一致しません。
+
+ログ内容： 対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の項目数「20」が、プラグインf013WEBカタログ部品情報excelファイル解析で処理可能項目数「21」と一致しません。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-7-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-7-2 を参照。
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxエビデンス
+
+3-2-7-3
+
+3-2-7-4
+
+Excel列名は正しいです
+Excel列名が正しくありません
+
+※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+なし
+
+なし
+
+確認事項なく、引き続き処理
+ExitCode：242
+
+異常終了
+
+コンソールログ出力
+
+-
+ExitCode：242
+
+異常終了
+
+コンソールログ出力
+
+-
+OK
+
+-
+####### TH.尚
+
+-
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の第「6」列の項目IDは、プラグインf013WEBカタログ部品情報excelファイル解析に定義済みの項目ID:「Part desc」ではなく、「f013_service_parts_news」です。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の第「6」列の項目IDは、プラグインf013WEBカタログ部品情報excelファイル解析に定義済みの項目ID:「Part desc」ではなく、「f013_service_parts_news」です。
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の第「6」列の項目IDは、プラグインf013WEBカタログ部品情報excelファイル解析に定義済みの項目ID:「Part desc」ではなく、「f013_service_parts_news」です。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の第「6」列の項目IDは、プラグインf013WEBカタログ部品情報excelファイル解析に定義済みの項目ID:「Part desc」ではなく、「f013_service_parts_news」です。
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の第「6」列の項目IDは、プラグインf013WEBカタログ部品情報excelファイル解析に定義済みの項目ID:「Part desc」ではなく、「f013_service_parts_news」です。
+
+ログ内容：対象データファイル「gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xls」の第「6」列の項目IDは、プラグインf013WEBカタログ部品情報excelファイル解析に定義済みの項目ID:「Part desc」ではなく、「f013_service_parts_news」です。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-7-4 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-7-4 を参照。
+
+3-3-2
+
+ファイル名から取得
+
+Excelファイル名：f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx
+
+あり
+
+3-3
+
+Excelデータ加工
+
+3-3-1 前後トリム
+
+列「f013_service_parts_news」
+列「f013_parts_name_code」
+列「f013_parts_number」
+列「f013_parts_name」
+列「f013_parts_quantity」
+列「f013_genuine_parts_price」
+列「f013_parts_specific information」
+列「f013_parts_remarks」
+列「f013_parts_maker_code」
+列「f013_supply_mode」
+列「f013_options」
+列「f013_supply_alt_parts_number」
+列「f013_supply_alt_parts_maker_code」
+列「f013_supply_alt_parts_price」
+列「f013_parts_start_date」
+列「f013_parts_end_date」
+列「f013_d2s_protal_name」
+列「f013_supply_alt_parts_price_group」、トリム後空文字になる場合
+列「f013_parts_price_group」
+
+列「f013_acquisition_date」
+列「f013_main_group_code」
+列「f013_sub_group_code」
+列「f013_car_model」
+列「f013_car_model_classification_code」
+
+3-3-3 加工なし
+
+列「f013_main_group」
+列「f013_sub_group」
+
+3-4
+
+3-4-1
+
+3-4-2
+
+3-4-2-1
+
+3-4-2-2
+
+3-4-2-3
+
+レコードの読み取りと保存（予期せぬ異常を確認）
+
+成功した場合
+
+失敗した場合
+
+・エラーハンドリングを「resume」に設定する
+
+・エラーハンドリングを「skip」に設定する
+
+・エラーハンドリングを「terminate」に設定する
+
+4
+
+データコンバート : レコードのカラム毎に操作
+
+※起動時のパラメータ
+
+-n：market-vehicle-data
+-w：workflow-01m0013p001004-znp7k-c7r4k
+
+4-1
+
+データ型変換
+4-1-1 データ型の変換が成功
+4-1-2 データ型の変換が失敗
+4-1-2-1
+
+・エラーハンドリングを「resume」に設定する
+
+あり
+
+Japan
+ 01139C
+ ME231108
+ ｶﾊﾞｰ,ﾛｯｶ ｶﾊﾞｰ
+
+14200
+
+ I034
+
+最終生成された Parquet ファイルで確認
+Japan
+01139C
+ME231108
+ｶﾊﾞｰ,ﾛｯｶ ｶﾊﾞｰ
+1
+14200
+
+I034
+
+Japan
+01139C
+ME231108
+ｶﾊﾞｰ,ﾛｯｶ ｶﾊﾞｰ
+
+14200
+
+I034
+
+OK
+
+####### TH.尚
+
+ 202, 204, 205, 20B, 232, 24B, 27Z, 28A, 28S, 29S, 2AY, 2BD, 2DM, 2J2, 2M2, 2UM, 2UN, 30C, 34P, 37H, 37P, 37Q, 3AA, 3JP, 3JX, 3M7, 3RF, 42L, 4W2, 4WJ, 5LF, 5M0, 5TX, 644, 68Y, 6B3, 6QM, A74, A76
+
+202, 204, 205, 20B, 232, 24B, 27Z, 28A, 28S, 29S, 2AY, 2BD, 2DM, 2J2, 2M2, 2UM, 2UN, 30C, 34P, 37H, 37P, 37Q, 3AA, 3JP, 3JX, 3M7, 3RF, 42L, 4W2, 4WJ, 5LF, 5M0, 5TX, 644, 68Y, 6B3, 6QM, A74, A76
+
+202, 204, 205, 20B, 232, 24B, 27Z, 28A, 28S, 29S, 2AY, 2BD, 2DM, 2J2, 2M2, 2UM, 2UN, 30C, 34P, 37H, 37P, 37Q, 3AA, 3JP, 3JX, 3M7, 3RF, 42L, 4W2, 4WJ, 5LF, 5M0, 5TX, 644, 68Y, 6B3, 6QM, A74, A76
+
+ 2017.01.30
+ 2017.07.01
+ COVER,ROCKER COVER
+
+2017.01.30
+2017.07.01
+COVER,ROCKER COVER
+
+C
+
+C
+
+20250328
+11
+11.110
+FDA60
+B21S003
+
+あり
+
+11 ｴﾝｼﾞﾝ
+11.110.ﾛｯｶ ｶﾊﾞｰ & ﾌﾞﾘｰｻﾞ
+
+11 ｴﾝｼﾞﾝ
+11.110.ﾛｯｶ ｶﾊﾞｰ & ﾌﾞﾘｰｻﾞ
+
+確認事項なく、引き続き処理
+
+ExitCode：124
+
+ExitCode：124
+
+ExitCode：255
+
+あり
+
+あり
+
+あり
+
+あり
+
+なし
+
+なし
+
+2017.01.30
+2017.07.01
+COVER,ROCKER COVER
+
+C
+
+20250328
+
+11.110
+FDA60
+B21S003
+
+11 ｴﾝｼﾞﾝ
+11.110.ﾛｯｶ ｶﾊﾞｰ & ﾌﾞﾘｰｻﾞ
+
+-
+
+ExitCode：124
+
+ExitCode：124
+
+ExitCode：255
+
+確認事項なく、引き続き処理
+
+-
+
+ExitCode：120
+継続処理（次のレコードから処理し、警告を出力）を行い、エラーレコードを除外した上で、Parquetファイルを生成する
+
+ExitCode：120
+継続処理（次のレコードから処理し、警告を出力）を行い、エラーレコードを除外した上で、Parquetファイルを生成する
+
+コンソールログ出力
+
+コンソールログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+OK
+
+####### TH.尚
+
+OK
+
+####### TH.尚
+
+-
+
+OK
+
+OK
+
+OK
+
+-
+
+OK
+
+-
+
+-
+
+####### TH.尚
+
+####### TH.尚
+
+####### TH.尚
+
+-
+
+-
+
+#######
+
+TH.尚
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-1-2-1 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-1-2-1 を参照。
+スタックトレース: 出力なし
+
+スタックトレース: 出力なし
+
+4-1-2-2
+
+・エラーハンドリングを「skip」に設定する
+
+なし
+
+ExitCode：120
+継続処理（次のファイルから処理し、警告を出力）を行い、異常発生行までのデータを出力して、Parquetファイルを生成する
+
+ExitCode：120
+継続処理（次のファイルから処理し、警告を出力）を行い、異常発生行までのデータを出力して、Parquetファイルを生成する
+
+OK
+
+####### TH.尚
+
+コンソールログ出力
+
+コンソールログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+スタックトレース: 出力なし
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+スタックトレース: 出力なし
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-1-2-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-1-2-2 を参照。
+
+4-1-2-3
+
+・エラーハンドリングを「terminate」に設定する
+
+なし
+
+ExitCode：236
+異常終了
+
+ExitCode：236
+異常終了
+
+OK
+
+####### TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+スタックトレース: 出力なし
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+スタックトレース: 出力なし
+
+ログ内容： エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:データ「aaa」を指定「System.Int32」に変換できません。
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-1-2-3 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-1-2-3 を参照。
+
+4-2
+
+データの長さチェック
+
+4-2-1
+
+データの長さが最大制限以内である
+
+4-2-2 データの長さが最大制限を超えた
+4-2-2-1
+
+・エラーハンドリングを「resume」に設定する
+
+なし
+
+なし
+
+確認事項なく、引き続き処理
+
+-
+
+ExitCode：120
+継続処理（次のレコードから処理し、警告を出力）を行い、エラーレコードを除外した上で、Parquetファイルを生成する
+
+ExitCode：120
+継続処理（次のレコードから処理し、警告を出力）を行い、エラーレコードを除外した上で、Parquetファイルを生成する
+
+コンソールログ出力
+
+コンソールログ出力
+
+-
+
+OK
+
+-
+
+-
+
+####### TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-2-2-1 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-2-2-1 を参照。
+
+4-2-2-2
+
+・エラーハンドリングを「skip」に設定する
+
+なし
+
+ExitCode：120
+継続処理（次のファイルから処理し、警告を出力）を行い、異常発生行までのデータを出力して、Parquetファイルを生成する
+
+ExitCode：120
+継続処理（次のファイルから処理し、警告を出力）を行い、異常発生行までのデータを出力して、Parquetファイルを生成する
+
+OK
+
+####### TH.尚
+
+コンソールログ出力
+
+コンソールログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+スタックトレース: 出力なし
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+4-2-2-3
+
+・エラーハンドリングを「terminate」に設定する
+
+なし
+
+ExitCode：236
+異常終了
+
+コンソールログ出力
+
+ExitCode：236
+異常終了
+
+コンソールログ出力
+
+OK
+
+####### TH.尚
+
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-2-2-2 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-2-2-2 を参照。
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxエビデンス
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：エラーファイル: gs://b144-cloud-storage-shang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_excel_035103_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet エラー行番号: 1 エラー明細:列「f013_parts_quantity」内容「01 000」は定義最大長さ「3」を超えています。
+
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-2-2-3 を参照。データリネージ実行ログ：シート「データリネージ実行ログ」の Case 4-2-2-3 を参照。
+
+Parquetファイルの物理圧縮 参照　使用
+
+5
+
+5-1
+
+Parquetファイルの作成
+
+Parquetファイル出力
+
+ParquetファイルのRowGroup
+
+Parquetファイルの論
+理圧縮
+
+row_group_key
+
+row_group_size
+
+論理圧縮
+
+物理圧縮
+
+データ
+⇒シート「使用
+データ」
+
+出力区分
+（1:Stream/1
+1:local）
+
+5-1-1
+
+未設定
+
+未設定(デフォルト：10000)論理圧縮未指定（空白）出力区分:1 （Stream）物理圧縮方式：7zCase5-1
+
+・Parquetファイルフルパス
+        gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_
+035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet
+
+・Parquetファイルフルパス
+        gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_2025
+0101_ver0001.parquet
+
+OK
+
+####### TH.尚
+
+・Parquetファイルの内容
+        シート「実行想定結果」
+
+・Parquetファイルの内容
+        シート「実行想定結果」
+
+・ParquetファイルのRowGroup
+        Parquetファイルは10,000行単位でグループ化される(デフォルト)
+
+・ParquetファイルのRowGroup
+        Parquetファイルは10,000行単位でグループ化される(デフォルト)
+
+・論理圧縮結果
+        Parquetファイルに論理圧縮が設定されていません。
+
+・論理圧縮結果
+        Parquetファイルに論理圧縮が設定されていません。
+
+・物理圧縮結果
+        出力Parquet：
+catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.par
+quet
+
+・コンソールログ/ローカルログ：
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始し
+ます...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しまし
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_
+035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet(cid:9)(cid:9)
+(cid:9)(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	Parquetファイルは5000行単位でグループ化される
+(cid:9)(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はBrotliです
+(cid:9)(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+        出力Parquet：
+catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.par
+quet(cid:9)(cid:9)
+(cid:9)(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始し
+ます...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しまし
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_
+035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet(cid:9)
+(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	Parquetファイルはキー列「f013_parts_name」、「f013_parts_number」でグループ化される
+(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はGzipです
+(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：
+catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.7z(cid:9)
+(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始し
+ます...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しまし
+た。
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_
+035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet(cid:9)
+(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	Parquetファイルはキー列「f013_parts_name」、「f013_parts_number」と5000行単位でグルー
+プ化される
+(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はLz4です
+(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：
+catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.zip(cid:9)(cid:9)
+(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始し
+ます...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しまし
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_
+035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet
+(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	"Parquetファイルは10,000行単位でグループ化される(デフォルト)															"
+(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はLzoです
+(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：
+catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.par
+quet(cid:9)
+(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始し
+ます...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しまし
+
+・物理圧縮結果
+        出力Parquet：catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet
+
+・コンソールログ/ローカルログ：
+[2025-11-03 16:52:17] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:52:17]
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 正常件数：388
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 異常件数：0
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[2025-11-03 16:52:21] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_2025
+0101_ver0001.parquet(cid:9)(cid:9)
+(cid:9)(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	Parquetファイルは5000行単位でグループ化される
+(cid:9)(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はBrotliです
+(cid:9)(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+        出力Parquet：catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet
+(cid:9)(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+[2025-11-03 16:52:17] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:52:17]
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 正常件数：388
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 異常件数：0
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[2025-11-03 16:52:21] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_2025
+0101_ver0001.parquet(cid:9)
+(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	Parquetファイルはキー列「f013_parts_name」、「f013_parts_number」でグループ化される
+(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はGzipです
+(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.7z
+(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+[2025-11-03 16:52:17] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:52:17]
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 正常件数：388
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 異常件数：0
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[2025-11-03 16:52:21] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_2025
+0101_ver0001.parquet(cid:9)
+(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	Parquetファイルはキー列「f013_parts_name」、「f013_parts_number」と5000行単位でグループ化される
+(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はLz4です
+(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.zip
+(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+[2025-11-03 16:52:17] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:52:17]
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 正常件数：388
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 異常件数：0
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[2025-11-03 16:52:21] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_2025
+0101_ver0001.parquet
+(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	"Parquetファイルは10,000行単位でグループ化される(デフォルト)															"
+(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はLzoです
+(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet
+(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+[2025-11-03 16:52:17] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:52:17]
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 正常件数：388
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 異常件数：0
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[2025-11-03 16:52:21] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+
+OK
+
+#######
+
+TH.尚
+
+OK
+
+####### TH.尚
+
+OK
+
+####### TH.尚
+
+OK
+
+#######
+
+TH.尚
+
+5-1-2
+
+未設定
+
+設定：100
+
+論理圧縮指定：parquet_brotli出力区分:1 （Stream）物理圧縮方式：zipCase5-1
+
+なし
+
+未設定
+
+論理圧縮指定：parquet_gzip出力区分:11 （local） 物理圧縮方式：7zCase5-1
+
+なし
+
+5-1-3
+
+設定：
+    -
+f013_parts_numb
+er(cid:9)
+
+設定：100
+
+論理圧縮指定：parquet_lz4出力区分:11 （local） 物理圧縮方式：zipCase5-1
+
+なし
+
+5-1-4
+
+設定：
+    -
+f013_parts_numb
+er(cid:9)
+
+5-1-5
+
+未設定
+
+未設定(デフォルト：10000)論理圧縮指定：parquet_lzo出力区分:1 （Stream）物理圧縮未指定（空白）
+Case5-1
+
+なし
+
+なし
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+5-1-6
+
+未設定
+
+未設定(デフォルト：10000)論理圧縮指定：parquet_snappy出力区分:1 （Stream）物理圧縮未指定（空白）
+Case5-1
+
+5-1-7
+
+未設定
+
+未設定(デフォルト：10000)
+
+論理圧縮指定：parquet_zstd出力区分:1 （Stream）物理圧縮未指定（空白）
+Case5-1
+
+6
+
+全体の正常系ログの出力確認
+
+参照シート「使用データ」：Case 6-1
+
+6-1
+
+出力メッセージタイプ確認(loglevel:realse)
+
+コンソールログ出力
+
+ローカルログ出力
+
+クラウドログ出力
+
+データリネージ実行ログ出力
+
+6-2
+
+出力メッセージタイプ確認(loglevel:debug)
+
+コンソールログ出力
+
+ローカルログ出力
+
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+
+なし
+
+OK
+
+####### TH.尚
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxエビデンス
+
+OK
+
+####### TH.尚
+
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_
+035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet(cid:9)
+(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	"Parquetファイルは10,000行単位でグループ化される(デフォルト)															"
+(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はSnappyです
+(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：
+catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.par
+quet(cid:9)(cid:9)
+(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始し
+ます...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しまし
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_
+035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet(cid:9)
+(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	"Parquetファイルは10,000行単位でグループ化される(デフォルト)															"
+(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はZstdです
+(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：
+catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.par
+quet(cid:9)(cid:9)
+(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始し
+ます...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-
+c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しまし
+
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_2025
+0101_ver0001.parquet(cid:9)
+(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	"Parquetファイルは10,000行単位でグループ化される(デフォルト)															"
+(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はSnappyです
+(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet
+(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+[2025-11-03 16:52:17] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:52:17]
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 正常件数：388
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 異常件数：0
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[2025-11-03 16:52:21] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+・Parquetファイルフルパス
+(cid:9)gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/Ac/202501/FDA60/catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_2025
+0101_ver0001.parquet(cid:9)
+(cid:9)(cid:9)(cid:9)
+・Parquetファイルの内容
+	シート「実行想定結果」
+(cid:9)(cid:9)(cid:9)
+・ParquetファイルのRowGroup
+	"Parquetファイルは10,000行単位でグループ化される(デフォルト)															"
+(cid:9)(cid:9)(cid:9)
+・論理圧縮結果
+	Parquetファイルの論理圧縮方式はZstdです
+(cid:9)(cid:9)(cid:9)
+・物理圧縮結果
+	出力Parquet：catalog_parts_info_excel_035130_FDA60_EH4_B21S003_11_11.110_ac_20250101_ver0001.parquet
+(cid:9)(cid:9)(cid:9)
+・コンソールログ/ローカルログ：
+[2025-11-03 16:52:17] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:52:17]
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 正常件数：388
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 異常件数：0
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[2025-11-03 16:52:21] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 異常件数：0
+
+[2025-11-03 16:52:17] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:52:17]
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグ
+イン振分モジュール」を開始します...
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 正常件
+数：388
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 異常件
+数：0
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグ
+イン振分モジュール」が完了しました。
+[2025-11-03 16:52:21] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力ファ
+[2025-11-03 16:52:17] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:52:17]
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグ
+イン振分モジュール」を開始します...
+[2025-11-03 16:52:19] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 正常件
+数：388
+[2025-11-03 16:52:20] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 異常件
+数：0
+
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: )
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 正常件数：388
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+・データリネージ実行ログテーブル：
+       データリネージ実行ログ：シート「データリネージ実行ログ」の Case 6-1 を参照。
+
+2025-11-03T08:13:11.007930500Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+「f013WEBカタログ部品情報excel累積作成」を開始します...
+2025-11-03T08:13:35.913733800Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+2025-11-03T08:13:47.203897400Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+「プラグイン振分モジュール」を開始します...
+2025-11-03T08:13:47.883987800Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+2025-11-03T08:13:55.108599600Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+正常件数：388
+2025-11-03T08:13:55.274275700Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+異常件数：0
+2025-11-03T08:13:55.802488600Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+「f013WEBカタログ部品情報excelファイル解析」が正常完了しました。
+2025-11-03T08:13:56.002097Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: ) 「プ
+ラグイン振分モジュール」が完了しました。
+・データリネージ実行ログテーブル：
+       データリネージ実行ログ：シート「データリネージ実行ログ」の Case 6-1 を参照。
+
+OK
+
+####### TH.尚
+
+OK
+
+####### TH.尚
+
+OK
+
+#######
+
+TH.尚
+
+OK
+
+####### TH.尚
+
+OK
+
+####### TH.尚
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 転記仕様のYAMLファイル「/workspace/transform\transform_spec_130020.yml」の
+読み込み 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 対象データファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.
+110_parts_20250101_ver0001.xlsx」の読み込み 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) プラグイン「f013-parts-list-excel-parser.dll」 取得
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) プラグイン「f013-parts-list-excel-parser.dll」のロード
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 振り分けモジュール : 前処理Before()メソッド呼出し
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 前処理(Beforeメソッド) 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 引数(JSON)内容の解析
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 指定のInputスキーマファイル
+「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」のチェック 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 部品情報excelファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.
+110_parts_20250101_ver0001.xlsx」のファイルチェック 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 転記仕様のYAMLファイル「/workspace/transform\transform_spec_130020.yml」の
+読み込み 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 対象データファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.
+110_parts_20250101_ver0001.xlsx」の読み込み 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) プラグイン「f013-parts-list-excel-parser.dll」 取得
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) プラグイン「f013-parts-list-excel-parser.dll」のロード
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 振り分けモジュール : 前処理Before()メソッド呼出し
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 前処理(Beforeメソッド) 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 引数(JSON)内容の解析
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 指定のInputスキーマファイル
+「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」のチェック 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+ExecuteTaskId: ) 部品情報excelファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.
+110_parts_20250101_ver0001.xlsx」のファイルチェック 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k
+
+[2025-11-03 16:48:44] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:48:44]
+[2025-11-03 16:48:45] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 転記仕
+様のYAMLファイル「/workspace/transform\transform_spec_130020.yml」の読み込み 実行
+[2025-11-03 16:48:45] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 入力・
+出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 対象
+データファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」の読み込み 実行
+[2025-11-03 16:48:46] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグ
+イン振分モジュール」を開始します...
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグ
+イン「f013-parts-list-excel-parser.dll」 取得
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグ
+イン「f013-parts-list-excel-parser.dll」のロード
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分
+けモジュール : 前処理Before()メソッド呼出し
+[2025-11-03 16:48:46] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 前処理
+(Beforeメソッド) 実行
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 引数
+(JSON)内容の解析
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 指定の
+Inputスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」のチェック 実行
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 部品情
+報excelファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」のファイルチェック
+実行
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分
+けモジュール : 本処理Main()メソッド呼出し
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 本処理
+(Mainメソッド) 実行
+[2025-11-03 16:48:44] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報excel累積作成」を開始します...
+[2025-11-03 16:48:44]
+[2025-11-03 16:48:45] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 転記仕
+様のYAMLファイル「/workspace/transform\transform_spec_130020.yml」の読み込み 実行
+[2025-11-03 16:48:45] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 入力・
+出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 対象
+データファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」の読み込み 実行
+[2025-11-03 16:48:46] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグ
+イン振分モジュール」を開始します...
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグ
+イン「f013-parts-list-excel-parser.dll」 取得
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグ
+イン「f013-parts-list-excel-parser.dll」のロード
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分
+けモジュール : 前処理Before()メソッド呼出し
+[2025-11-03 16:48:46] [情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 前処理
+(Beforeメソッド) 実行
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 引数
+(JSON)内容の解析
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 指定の
+Inputスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」のチェック 実行
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 部品情
+報excelファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」のファイルチェック
+実行
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分
+けモジュール : 本処理Main()メソッド呼出し
+[2025-11-03 16:48:46] [プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 本処理
+(Mainメソッド) 実行
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+クラウドログ出力
+
+データリネージ実行ログ出力
+
+なし
+
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excel累積作成」を開始します...
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: )
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 転記仕様のYAMLファイル「/workspace/transform/transform_spec_130020.yml」の
+読み込み 実行
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 対象データファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.
+110_parts_20250101_ver0001.xlsx」の読み込み 実行
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) プラグイン「f013-parts-list-excel-parser.dll」 取得
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) プラグイン「f013-parts-list-excel-parser.dll」のロード
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 振り分けモジュール : 前処理Before()メソッド呼出し
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 前処理(Beforeメソッド) 実行
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 引数(JSON)内容の解析
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 指定のInputスキーマファイル
+「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」のチェック 実行
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 部品情報excelファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.
+110_parts_20250101_ver0001.xlsx」のファイルチェック 実行
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+ExecuteTaskId: ) 振り分けモジュール : 本処理Main()メソッド呼出し
+(NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf
+・データリネージ実行ログテーブル：
+       データリネージ実行ログ：シート「データリネージ実行ログ」の Case 6-2 を参照。
+
+2025-11-02T08:13:11.007930500Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+「f013WEBカタログ部品情報excel累積作成」を開始します...
+2025-11-02T08:13:35.913733800Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+2025-11-02T08:13:42.645696500Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+転記仕様のYAMLファイル「/workspace/transform/transform_spec_130020.yml」の読み込み 実行
+2025-11-02T08:13:42.844729400Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+2025-11-02T08:13:46.618018700Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+対象データファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」の読み込み 実行
+2025-11-02T08:13:47.203897400Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+「プラグイン振分モジュール」を開始します...
+2025-11-02T08:13:47.401809600Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+プラグイン「f013-parts-list-excel-parser.dll」 取得
+2025-11-02T08:13:47.551077400Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+プラグイン「f013-parts-list-excel-parser.dll」のロード
+2025-11-02T08:13:47.731003300Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+振り分けモジュール : 前処理Before()メソッド呼出し
+2025-11-02T08:13:47.883987800Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+「f013WEBカタログ部品情報excelファイル解析」プラグインを開始します...
+2025-11-02T08:13:48.067302800Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+前処理(Beforeメソッド) 実行
+2025-11-02T08:13:48.284745500Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+引数(JSON)内容の解析
+2025-11-02T08:13:48.602756800Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+指定のInputスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_excel_work.yaml」のチェック 実行
+2025-11-02T08:13:48.784263300Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+部品情報excelファイル「gs://b144-cloud-storage-
+shang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_parts_20250101_ver0001.xlsx」のファイルチェック
+実行
+2025-11-02T08:13:49.819375900Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+振り分けモジュール : 本処理Main()メソッド呼出し
+2025-11-02T08:13:50.313516Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: ) 本
+処理(Mainメソッド) 実行
+2025-11-02T08:13:55.108599600Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+正常件数：388
+2025-11-02T08:13:55.274275700Z (NameSpace: market-vehicle-data-shang WorkFlowName: workflow-01m0013p001004-rvr9v-mmnjf ExecuteTaskId: )
+・データリネージ実行ログテーブル：
+       データリネージ実行ログ：シート「データリネージ実行ログ」の Case 6-2 を参照。
+
+OK
+
+####### TH.尚
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxエビデンス
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+
+
+
+
+================================================================================
+ドキュメント: (No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル_ケース_V2.pdf (PDF 2)
+ファイル名: (No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル_ケース_V2.pdf
+================================================================================
+
+システム名
+f013カタログ部品データ作成
+
+f013カタログ部品データ作成
+部品一覧Excel 累積作成
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxケース
+
+大分類
+
+中分類
+
+小分類
+
+テスト条件
+
+仕様
+
+備考
+
+結果
+
+実施日
+
+実施者 エビデンス
+
+ツール起動
+
+起動時のパラメータ確認
+
+リネージグループID(-g)
+
+№
+
+1
+
+1-1
+1-1-1
+1-1-1-1
+
+1-1-1-2
+
+1-1-1-3
+
+1-1-2
+1-1-2-1
+
+1-1-2-2
+
+1-1-2-3
+
+1-1-3
+1-1-3-1
+
+1-1-3-2
+
+1-1-3-3
+
+1-1-4
+1-1-4-1
+
+1-1-4-2
+
+1-1-4-3
+
+1-1-5
+1-1-5-1
+
+1-1-5-2
+
+1-1-5-3
+
+1-1-6
+1-1-6-1
+1-1-6-2
+1-1-6-3
+1-1-6-4
+1-1-6-5
+
+1-1-7
+1-1-7-1
+
+1-2
+1-2-1
+
+1-2-2
+1-2-2-1
+1-2-2-2
+1-2-2-3
+1-2-2-4
+1-2-2-5
+1-2-2-6
+1-2-2-7
+
+1-3
+1-3-1
+1-3-1-1
+
+1-3-1-2
+
+1-3-2
+
+-g 設定あり（-g lineage-group-id）
+
+確認事項なく、引き続き処理
+
+設定がない（「-g」オプションも指定なし）
+
+空白に設定（「-g ""」のみ指定）
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション  「-g(--lineage-group-id)」が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション 「-g(--lineage-group-id)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+②LOGメッセージの修正
+
+リネージサブグループID(-s)
+
+-s 設定あり（-s lineage-subgroup-id）
+
+確認事項なく、引き続き処理
+
+設定がない（「-s」オプションも指定なし）
+
+空白に設定（「-s ""」のみ指定）
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション 「-s(--lineage-subgroup-id)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション 「-s(--lineage-subgroup-id)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+②LOGメッセージの修正
+
+GCPプロジェクトID(-p)
+
+-p 設定あり（-p project-id）
+
+確認事項なく、引き続き処理
+
+ネームスペース(-n)
+
+ワークフロー名(-w)
+
+設定がない（「-p」オプションも指定なし）
+
+空白に設定（「-p ""」のみ指定）
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション 「-p(--project-id)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション 「-p(--project-id)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+②LOGメッセージの修正
+
+-n 設定あり（-n workflow-namespace）
+
+確認事項なく、引き続き処理
+
+設定がない（「-n」オプションも指定なし）
+
+空白に設定（「-n ""」のみ指定）
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション 「-n(--workflow-namespace)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション 「-n(--workflow-namespace)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+②LOGメッセージの修正
+
+-w 設定あり（-w workflow-name）
+
+確認事項なく、引き続き処理
+
+設定がない（「-w」オプションも指定なし）
+
+空白に設定（「-w ""」のみ指定）
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション 「-w(--workflow-name)」 が未設定です。W/F動作時は定義YAMLテンプレートで引数に指定してください。
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：必須オプション 「-w(--workflow-name)」 の値が空です。W/F動くの場合、定義Yamlの テンプレートの引数で値が指定されているか確認してください。
+
+②LOGメッセージの修正
+
+Optional  入力パス(-i) と/処理ユニットのセット(--input-list-file)/処理対象ファイル選択（--input-file-selector ）
+
+-i/--input-file のみが設定されている場合
+--input-list-file のみが設定されている場合
+--input-file-selector のみが設定されている場合
+-i/--input-file 、--input-list-file、--input-file-selector のいずれも設定されていない場合
+-i/--input-file 、--input-list-file、--input-file-selector  のうち、複数が同時に設定されている場合
+
+確認事項なく、引き続き処理
+確認事項なく、引き続き処理
+確認事項なく、引き続き処理
+確認事項なく、引き続き処理
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：オプション '-i/--input-file', '--input-list-file', '--input-file-selector' は同時に指定できません。どちらか一方のみを指定してください。
+
+Optional 実行タスクID（-t）、チェックなし
+
+それ以外のオプションが入ってる場合
+
+データベース接続
+
+接続成功
+
+接続失敗
+
+配置ファイルの存在チェック
+
+パラメータYamlファイル
+
+※ parameter_(workflowId).yml
+
+転記仕様Yamlファイル
+
+上記以外のオプションが指定して
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：不明なオプション「{0}」が指定されました。入力パラメータを確認してください。
+
+・環境変数が存在しません
+・データベースのユーザー名が正しくありません
+・データベースのパスワードが正しくありません
+・ホスト名/IPアドレスが間違っています
+・ポート番号が不正です
+・ネットワーク接続が不安定です
+・データベースサービスが起動していません
+
+存在する
+
+存在しない
+
+確認事項なく、引き続き処理
+
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+コンソールにメッセージを出力して異常終了(255)
+
+確認事項なく、引き続き処理
+
+ExitCode：255
+コンソールにメッセージを出力して異常終了
+ログ内容：指定されたパラメータファイル「xxx」が見つかりません。
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+OK
+OK
+OK
+OK
+
+OK
+
+OK
+
+OK
+OK
+OK
+OK
+OK
+OK
+OK
+
+OK
+
+OK
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+2025/11/3
+2025/11/3
+2025/11/3
+2025/11/3
+
+TH.尚
+TH.尚
+TH.尚
+TH.尚
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+2025/11/3
+2025/11/3
+2025/11/3
+2025/11/3
+2025/11/3
+2025/11/3
+
+TH.尚
+TH.尚
+TH.尚
+TH.尚
+TH.尚
+TH.尚
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+②LOGメッセージの修正
+
+PTE-010-23.システムテスト仕様書
+
+1-3-2-1
+
+1-3-2-2
+
+2
+
+2-1
+
+2-1-1
+
+2-1-2
+
+※ transform_spec_(lineageId).yml]
+
+存在する
+
+存在しない
+
+確認事項なく、引き続き処理
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：転記仕様ファイル「xxx」が見つかりません。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：転記仕様ファイル「xxx」が見つかりません。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：転記仕様ファイル「xxx」が見つかりません。
+
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+本ツール該当 リネージの特定および設定内容のチェック
+
+プロセスIDとタスクIDをもとにリネージ情報を取得
+
+1つだけリネージ設定あり
+
+確認事項なく、引き続き処理
+
+２つ以上リネージ設定あり
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxケース
+
+OK
+
+2025/11/3
+
+TH.尚
+
+OK
+
+2025/11/3
+
+TH.尚
+
+OK
+
+OK
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2-1-3
+
+1つリネージもない
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：パラメータYAML「xxx」で、プロセスID「xxx」とタスクID「xxx」のリネージ定義が重複しています。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：パラメータYAML「xxx」で、プロセスID「xxx」とタスクID「xxx」のリネージ定義が重複しています。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：パラメータYAML「xxx」で、プロセスID「xxx」とタスクID「xxx」のリネージ定義が重複しています。
+
+データリネージ実行ログ出力：
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+ExitCode:255
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：パラメータYAML「xxx」で、プロセスID「xxx」・タスクID「xxx」に該当するリネージ定義は見つかりません。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：パラメータYAML「xxx」で、プロセスID「xxx」・タスクID「xxx」に該当するリネージ定義は見つかりません。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：パラメータYAML「xxx」で、プロセスID「xxx」・タスクID「xxx」に該当するリネージ定義は見つかりません。
+
+データリネージ実行ログ出力：
+
+OK
+
+2025/11/3
+
+TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+2-2
+2-2-1
+2-2-1-1
+2-2-1-2
+
+専用プラグインのチェック
+
+専用プラグイン指定あり
+
+※「リネージプロセス管理」の「拡張機能情報1（extend_function_info_1）」
+
+指定されたプラグインDLLが存在する
+指定されたプラグインDLLが存在しない※システム系エラー（エラーハンドリングと関係ない）
+
+確認事項なく、引き続き処理
+ExitCode：255
+異常終了
+コンソールログ出力
+
+OK
+OK
+
+2025/11/3
+2025/11/3
+
+TH.尚
+TH.尚
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：データリネージプロセス管理で、リネージID「{LineageID}」 の拡張機能情報1(extend_function_info_1)で指定されたDLLファイル「xxxx」が見つかりません。
+
+②LOGメッセージの修正
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：データリネージプロセス管理で、リネージID「{LineageID}」 の拡張機能情報1(extend_function_info_1)で指定されたDLLファイル「xxxx」が見つかりません。
+
+②LOGメッセージの修正
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：データリネージプロセス管理で、リネージID「{LineageID}」 の拡張機能情報1(extend_function_info_1)で指定されたDLLファイル「xxxx」が見つかりません。
+
+②LOGメッセージの修正
+
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+2-2-2
+
+専用プラグイン指定なし ※システム系エラー（エラーハンドリングと関係ない）
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：「データリネージプロセス管理」で、当リネージID「{LineageID}」の「拡張機能情報1(extend_function_info_1)」が未設定です。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：「データリネージプロセス管理」で、当リネージID「{LineageID}」の「拡張機能情報1(extend_function_info_1)」が未設定です。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：「データリネージプロセス管理」で、当リネージID「{LineageID}」の「拡張機能情報1(extend_function_info_1)」が未設定です。
+
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+入力ファイル名チェック
+
+入力ファイル名が命名規則に従っているかのチェック
+
+Excelファイルのフルパスがリソース管理表で定義された命名規則に適合している
+
+確認事項なく、引き続き処理
+
+2-3
+2-3-1
+2-3-1-1
+
+2-3-1-2
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+Excelファイルのフルパスがリソース管理表で定義された命名規則に適合していない    ※システム系エラー（エラーハンドリングと関係ない）
+
+ExitCode：244
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」は、当リネージの命名規則「xxxx」に適合しません。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」は、当リネージの命名規則「xxxx」に適合しません。
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+OK
+
+2025/11/3
+
+TH.尚
+
+OK
+
+OK
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+PTE-010-23.システムテスト仕様書
+
+3
+
+データファイル(Excel)から読取とデータ加工（専用ブラグイン経由）
+
+前処理 (Before)
+
+入力Schemaファイルチェック
+
+必須項目存在チェック
+
+※指定されたスキーマの必須項目の存在チェック
+
+必須項目「項目ID（item_id）」が 入力スキーマに存在する場合
+必須項目「項目ID（item_id）」が 入力スキーマに存在しない場合
+
+確認事項なく、引き続き処理
+※システム系エラー（エラーハンドリングと関係ない）
+ExitCode：253
+異常終了
+コンソールログ出力
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+OK
+OK
+
+2025/11/3
+2025/11/3
+
+TH.尚
+TH.尚
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」は、当リネージの命名規則「xxxx」に適合しません。
+
+データリネージ実行ログ出力：
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxケース
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+3-1
+3-1-1
+3-1-1-1
+3-1-1-2
+
+3-2
+3-2-1
+3-2-1-1
+3-2-1-2
+
+3-2-2
+3-2-2-1
+
+3-2-2-2
+
+3-2-3
+3-2-3-1
+
+3-2-3-2
+
+3-2-4
+3-2-4-1
+
+3-2-4-2
+
+3-2-5
+3-2-5-1
+
+3-2-5-2
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「xxxx」に、必須項目「xxxx」がないです。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「xxxx」に、必須項目「xxxx」がないです。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「xxxx」に、必須項目「xxxx」がないです。
+
+データリネージ実行ログ出力：
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+Excelファイルチェック
+
+このリネージは、「f013-parts-list-excel-parser」指定する
+
+エクセルファイルのバージョン
+
+2003(.xls)バージョンのExcelファイル
+2007(. xlsx)バージョンのExcelファイル
+
+確認事項なく、引き続き処理
+確認事項なく、引き続き処理
+
+入力ファイル内のマクロ変数の存在チェック
+
+入力ファイル内のマクロ変数が存在する
+
+確認事項なく、引き続き処理
+
+入力ファイル内のマクロ変数が存在しない
+
+確認事項なく、引き続き処理
+
+入力ファイル命名規則に必須のマクロ変数が含まれているかのチェック
+
+ファイルのフルパスにマクロ変数の対応値が存在する
+
+確認事項なく、引き続き処理
+
+ファイルのフルパスにマクロ変数の対応値が存在しない    ※システム系エラー（エラーハンドリングと関係ない）
+
+ExitCode：252
+異常終了
+コンソールログ出力
+
+OK
+OK
+
+OK
+
+OK
+
+OK
+
+OK
+
+2025/11/3
+2025/11/3
+
+TH.尚
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「xxxx」に必須マクロ変数「xxxx」がないです。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「xxxx」に必須マクロ変数「xxxx」がないです。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「xxxx」に必須マクロ変数「xxxx」がないです。
+
+データリネージ実行ログ出力：
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+入力ファイルの存在チェック
+
+入力ファイルが存在する
+
+確認事項なく、引き続き処理
+
+入力ファイルが存在しない
+
+ExitCode：245
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「{file}」が見つかりません。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「{file}」が見つかりません。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「{file}」が見つかりません。
+
+データリネージ実行ログ出力：
+
+OK
+
+OK
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+Excelファイル 0 バイトチェック
+
+正常なExcelファイルの場合
+
+確認事項なく、引き続き処理
+
+0バイトの Excelファイルの場合 ※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+ExitCode：243
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」が0バイトで、累積処理を実行できません。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」が0バイトで、累積処理を実行できません。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」が0バイトで、累積処理を実行できません。
+
+データリネージ実行ログ出力：
+
+OK
+
+OK
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+本処理 (Main)
+
+3-2-6
+3-2-6-1
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+シート数確認
+
+Excelファイルに1つのシートしかない
+
+このシートの内容を読み取ります。
+
+OK
+
+2025/11/3
+
+TH.尚
+
+PTE-010-23.システムテスト仕様書
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+3-2-6-2
+
+3-2-7
+3-2-7-1
+3-2-7-2
+
+3-2-7-3
+3-2-7-4
+
+Excelファイルに複数のシートがある
+
+※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+ExitCode：242
+異常終了
+コンソールログ出力
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxケース
+
+OK
+
+2025/11/3
+
+TH.尚
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」に複数のシートが存在します。1つシートのExcelファイルのみ処理可能です。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」に複数のシートが存在します。1つシートのExcelファイルのみ処理可能です。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」に複数のシートが存在します。1つシートのExcelファイルのみ処理可能です。
+
+データリネージ実行ログ出力：
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+データファイルの列チェック
+
+※指定されたExcel構造のチェック
+
+Excelファイルの列数は正しい
+Excelファイルの列数が正しくない※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+確認事項なく、引き続き処理
+ExitCode：242
+異常終了
+コンソールログ出力
+
+OK
+OK
+
+2025/11/3
+2025/11/3
+
+TH.尚
+TH.尚
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」の項目数「xxxx」が、プラグイン「f013WEBカタログ部品情報excelファイル解析」で処理可能項目数「xxxx」と一致しません。
+
+②LOGメッセージの修正
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」の項目数「xxxx」が、プラグイン「f013WEBカタログ部品情報excelファイル解析」で処理可能項目数「xxxx」と一致しません。
+
+②LOGメッセージの修正
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」の項目数「xxxx」が、プラグイン「f013WEBカタログ部品情報excelファイル解析」で処理可能項目数「xxxx」と一致しません。
+
+②LOGメッセージの修正
+
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+Excel列名は正しい
+Excel列名が正しくない ※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+確認事項なく、引き続き処理
+ExitCode：242
+異常終了
+コンソールログ出力
+
+OK
+OK
+
+2025/11/3
+2025/11/3
+
+TH.尚
+TH.尚
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」の第「xx」列の項目IDは、プラグイン「f013WEBカタログ部品情報excelファイル解析」に定義済みの項目ID:「xxxx」ではなく、「xxxx」です。②LOGメッセージの修正
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」の第「xx」列の項目IDは、プラグイン「f013WEBカタログ部品情報excelファイル解析」に定義済みの項目ID:「xxxx」ではなく、「xxxx」です。②LOGメッセージの修正
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」の第「xx」列の項目IDは、プラグイン「f013WEBカタログ部品情報excelファイル解析」に定義済みの項目ID:「xxxx」ではなく、「xxxx」です。②LOGメッセージの修正
+
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+3-3
+3-3-1
+
+Excelファイルのデータ加工
+前後トリム
+
+3-3-2
+
+ファイル名から取得
+
+列「f013_service_parts_news」
+列「f013_parts_name_code」
+列「f013_parts_number」
+列「f013_parts_name」
+列「f013_parts_quantity」
+列「f013_genuine_parts_price」
+列「f013_parts_specific information」
+列「f013_parts_remarks」
+列「f013_parts_maker_code」
+列「f013_supply_mode」
+列「f013_options」
+列「f013_supply_alt_parts_number」
+列「f013_supply_alt_parts_maker_code」
+列「f013_supply_alt_parts_price」
+列「f013_parts_start_date」
+列「f013_parts_end_date」
+列「f013_d2s_protal_name」
+列「f013_supply_alt_parts_price_group」
+列「f013_parts_price_group」
+
+列「f013_acquisition_date」
+列「f013_main_group_code」
+列「f013_sub_group_code」
+列「f013_car_model」
+列「f013_car_model_classification_code」
+
+最後で作成できたParquetの内容で確認する。
+列「f013_service_parts_news」 前後トリム
+列「f013_parts_name_code」 前後トリム
+列「f013_parts_number」 前後トリム
+列「f013_parts_name」 前後トリム
+列「f013_parts_quantity」 前後トリム
+列「f013_genuine_parts_price」 前後トリム
+列「f013_parts_specific information」 前後トリム
+列「f013_parts_remarks」 前後トリム
+列「f013_parts_maker_code」 前後トリム
+列「f013_supply_mode」 前後トリム
+列「f013_options」 前後トリム
+列「f013_supply_alt_parts_number」 前後トリム
+列「f013_supply_alt_parts_maker_code」 前後トリム
+列「f013_supply_alt_parts_price」 前後トリム
+列「f013_parts_start_date」 前後トリム
+列「f013_parts_end_date」 前後トリム
+列「f013_d2s_protal_name」 前後トリム
+列「f013_supply_alt_parts_price_group」  前後トリム、ただし、トリム後空文字になる場合は1バイトのスペースを設定する
+列「f013_parts_price_group」 前後トリム、ただし、トリム後空文字になる場合は1バイトのスペースを設定する
+
+Excelファイル名から、「!ACQUISITION_YYYYMMDD!」対応する値を設定
+Excelファイル名から、「!FS_MAINGRP_CD!」対応する値を設定
+Excelファイル名から、「!FS_SUBGRP_CD!」対応する値を設定
+Excelファイル名から、「!FS_CAR_MODEL!」対応する値を設定
+Excelファイル名から、「!FS_CAR_MODEL_CLSSFN!」対応する値を設定
+
+3-3-3
+
+3-4
+3-4-1
+
+3-4-2
+3-4-2-1
+
+3-4-2-2
+
+3-4-2-3
+
+加工なし
+
+レコードの読み取りと保存（予期せぬ異常を確認）
+
+成功した場合
+
+失敗した場合（※testCode）
+
+列「f013_main_group」
+列「f013_sub_group」
+
+そのまま出力
+そのまま出力
+
+確認事項なく、引き続き処理
+
+・エラーハンドリングを「resume」に設定する
+
+ExitCode：124
+継続処理（次のレコードから処理し、警告を出力）を行い、エラーレコードを除外した上で、Parquetファイルを生成する
+
+・エラーハンドリングを「skip」に設定する
+
+ExitCode：124
+継続処理（次のファイルから処理し、警告を出力）を行い、異常発生行までのデータを出力して、Parquetファイルを生成する
+
+・エラーハンドリングを「terminate」に設定する
+
+ExitCode：255
+異常終了し、Parquetファイルを生成しない
+
+OK
+
+2025/11/3
+
+TH.尚
+
+OK
+
+2025/11/3
+
+TH.尚
+
+OK
+
+2025/11/3
+
+TH.尚
+
+④プラグインでRecordレベルのエラーが発生する場合のテスト
+
+OK
+
+OK
+
+OK
+
+OK
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+後処理 (After)
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+4
+
+データコンバート : レコードのカラム毎に操作
+
+出力スキーマにコンバートする
+
+4-1
+4-1-1
+4-1-2
+4-1-2-1
+
+※ カラム操作機能は存在するが、今回のExcelデータ累積処理では未使用
+データ型変換
+
+・データ型の変換が成功
+・データ型の変換が失敗(loglevel: release)
+
+・エラーハンドリングを「resume」に設定する
+
+4-1-2-2
+
+・エラーハンドリングを「skip」に設定する
+
+4-1-2-3
+
+・エラーハンドリングを「terminate」に設定する
+
+4-2
+4-2-1
+4-2-2
+4-2-2-1
+
+データの長さチェック
+
+・データの長さが最大制限以内
+・データの長さが最大制限を超えた(loglevel: debug)
+
+・エラーハンドリングを「resume」に設定する
+
+4-2-2-2
+
+・エラーハンドリングを「skip」に設定する
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+確認事項なく、引き続き処理
+
+ExitCode：120
+継続処理（次のレコードから処理し、警告を出力）を行い、エラーレコードを除外した上で、Parquetファイルを生成する
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:データ「xx」を指定「xx」に変換できません。
+
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:データ「xx」を指定「xx」に変換できません。
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:データ「xx」を指定「xx」に変換できません。
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力：
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxケース
+
+OK
+
+OK
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+ExitCode：120
+継続処理（次のファイルから処理し、警告を出力）を行い、異常発生行までのデータを出力して、Parquetファイルを生成する
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:データ「xx」を指定「xx」に変換できません。
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:データ「xx」を指定「xx」に変換できません。
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:データ「xx」を指定「xx」に変換できません。
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+ExitCode：236
+異常終了し、Parquetファイルを生成しない
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:データ「xx」を指定「xx」に変換できません。
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:データ「xx」を指定「xx」に変換できません。
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:データ「xx」を指定「xx」に変換できません。
+スタックトレース: 出力あり
+
+データリネージ実行ログ出力：
+
+OK
+
+2025/11/3
+
+TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+OK
+
+2025/11/3
+
+TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+確認事項なく、引き続き処理
+
+ExitCode：120
+継続処理（次のレコードから処理し、警告を出力）を行い、エラーレコードを除外した上で、Parquetファイルを生成する
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:列「xxxx」内容「xxxx」は定義最大長さ「xx」を超えています。
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:列「xxxx」内容「xxxx」は定義最大長さ「xx」を超えています。
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:列「xxxx」内容「xxxx」は定義最大長さ「xx」を超えています。
+スタックトレース: 出力なし
+
+データリネージ実行ログ出力：
+
+OK
+
+OK
+
+2025/11/3
+
+TH.尚
+
+2025/11/3
+
+TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+ExitCode：120
+継続処理（次のファイルから処理し、警告を出力）を行い、異常発生行までのデータを出力して、Parquetファイルを生成する
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:列「xxxx」内容「xxxx」は定義最大長さ「xx」を超えています。
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:列「xxxx」内容「xxxx」は定義最大長さ「xx」を超えています。
+スタックトレース: 出力なし
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:列「xxxx」内容「xxxx」は定義最大長さ「xx」を超えています。
+スタックトレース: 出力なし
+
+OK
+
+2025/11/3
+
+TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+PTE-010-23.システムテスト仕様書
+
+4-2-2-3
+
+・エラーハンドリング　は「terminate」に設定する
+
+データリネージ実行ログ出力：
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_f013WEBカタログ部品情報EXCELファイル.xlsxケース
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+ExitCode：236
+異常終了し、Parquetファイルを生成しない
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:列「xxxx」内容「xxxx」は定義最大長さ「xx」を超えています。
+スタックトレース: 出力なし
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:列「xxxx」内容「xxxx」は定義最大長さ「xx」を超えています。
+スタックトレース: 出力あり
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：エラーファイル:xxx エラー行番号: xx エラー明細:列「xxxx」内容「xxxx」は定義最大長さ「xx」を超えています。
+スタックトレース: 出力あり
+
+データリネージ実行ログ出力：
+
+OK
+
+2025/11/3
+
+TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+5
+5-1
+
+6
+6-1
+
+6-2
+
+Parquetファイルの作成
+
+Parquetファイル出力
+
+確認内容：
+
+OK
+
+2025/11/3
+
+TH.尚
+
+ParquetのRowGroupKey、RowGroupSize、圧縮の組み合わせ
+
+・ParquetファイルのRowGroup
+
+・Parquetファイルフルパス
+
+→ 指定された命名規則に従って作成します。
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+・Parquetファイルの論理圧縮
+
+・Parquetファイルの物理圧縮
+
+・Parquetファイルの内容
+
+→ Excel データから読み取ったレコードを、指定のコンバート結果として出力します。
+
+・ParquetファイルのRowGroup → Schema で指定された RowGroupKey と RowGroupSize に従って グループ化 します。
+・論理圧縮結果
+・物理圧縮結果
+・実行ログ（cloud_logging/local） → 各処理段階の実行ログを出力します。
+・データリネージ実行ログテーブル→ 開始・終了などの基本情報を「データリネージ実行ログ」テーブルに出力します。
+
+→ 指定された論理圧縮方式で作成します。
+→ 指定された物理圧縮方式で圧縮します。
+
+全体の正常系ログの出力確認
+
+出力メッセージタイプ確認(loglevel:realse)
+
+コンソールログ
+ローカルログ
+クラウドログ
+データリネージ実行ログ
+
+出力メッセージタイプ確認(loglevel:debug)
+
+コンソールログ
+ローカルログ
+クラウドログ
+データリネージ実行ログ
+
+出力ログメッセージ確認（メッセージタイプ：Info）
+出力ログメッセージ確認（メッセージタイプ：Info）
+出力ログメッセージ確認（メッセージタイプ：Info）
+出力ログメッセージ確認（実行結果出力）
+
+出力ログメッセージ確認（メッセージタイプ：Info）
+出力ログメッセージ確認（メッセージタイプ：Info、Process）
+出力ログメッセージ確認（メッセージタイプ：Info、Process）
+出力ログメッセージ確認（実行結果出力）
+
+③Processタイプのログ出力テストの補完
+OK
+
+2025/11/3
+
+TH.尚
+
+OK
+
+2025/11/3
+
+TH.尚
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+
+

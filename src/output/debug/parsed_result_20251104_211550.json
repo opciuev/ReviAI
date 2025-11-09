@@ -1,0 +1,284 @@
+{
+  "rows": [
+    {
+      "requirement_no": "1",
+      "requirement_content": "前提: 累積ツール起動",
+      "evaluation": "〇",
+      "compliance_location": "単体テスト仕様書 ケース V2 P.1, エビデンス V2 P.1",
+      "compliance_reason": "テスト仕様書に「部品一覧Excel UT仕様書のCase1-1にて既にテスト済みである」と記載されており、本テストのスコープ外であることが確認されたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "2",
+      "requirement_content": "前提: 累積の該当リネージ情報を指定して",
+      "evaluation": "〇",
+      "compliance_location": "単体テスト仕様書 ケース V2 P.1, エビデンス V2 P.1",
+      "compliance_reason": "テスト仕様書に「部品一覧Excel UT仕様書のCase2-1にて既にテスト済みである」等と記載されており、本テストのスコープ外であることが確認されたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-1-1-1",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: リネージ設定情報および入力ファイルチェック: 「リソース管理」テーブルに、当リネージが使ってるリソースの設定情報チェック: 必須項目のチェック：文字コード（code_page）が設定の場合",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.1",
+      "compliance_reason": "期待結果通り、「確認事項なく、引き続き処理」となることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-1-1-2",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: リネージ設定情報および入力ファイルチェック: 「リソース管理」テーブルに、当リネージが使ってるリソースの設定情報チェック: 必須項目のチェック：文字コード（code_page）が未設定の場合",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.1",
+      "compliance_reason": "期待結果通り、ExitCode「255」で異常終了し、指定されたログが出力されることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-1-2-1",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: リネージ設定情報および入力ファイルチェック: InputスキーマYamlに、必須項目存在チェック: 必須項目はすべて InputスキーマYamlファイルに存在する場合",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.1",
+      "compliance_reason": "期待結果通り、「確認事項なく、引き続き処理」となることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-1-2-2",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: リネージ設定情報および入力ファイルチェック: InputスキーマYamlに、必須項目存在チェック: 必須項目の1つが InputスキーマYamlファイルに存在しない場合",
+      "evaluation": "△",
+      "compliance_location": "エビデンス V2 P.1",
+      "compliance_reason": "期待されるログメッセージが仕様書とエビデンスで異なっている。仕様書では「...必須項目「xxxx」がないです。」とあるが、エビデンスでは「...必須列「...」が存在しません。ご確認ください。」となっている。ただし、仕様書側で「②LOGメッセージの修正」という注記があり、エビデンスのログが修正後の正しいものであるため、一部不適合とする。",
+      "correction_plan": "テスト仕様書の期待結果ログメッセージを、実際に出力された「リソース管理テーブルにて、リネージID「130021」で指定されたスキーマファイル「...」に、必須列「...」が存在しません。ご確認ください。」に修正してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-2-1-1",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: DOMファイルパスのチェック: 入力ファイル命名規則内のマクロ変数の存在チェック: 命名規則内のマクロ変数が存在する",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.2",
+      "compliance_reason": "期待結果通り、「確認事項なく、引き続き処理」となることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-2-1-2",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: DOMファイルパスのチェック: 入力ファイル命名規則内のマクロ変数の存在チェック: 命名規則内のマクロ変数が存在しない",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.2",
+      "compliance_reason": "期待結果通り、「確認事項なく、引き続き処理」となることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-2-2-1",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: DOMファイルパスのチェック: 入力ファイル命名規則に必須のマクロ変数が含まれているかのチェック: 入力ファイルが存在する",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.2",
+      "compliance_reason": "期待結果通り、「確認事項なく、引き続き処理」となることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-2-2-2",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: DOMファイルパスのチェック: 入力ファイル命名規則に必須のマクロ変数が含まれているかのチェック: 入力ファイルが存在しない",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.2",
+      "compliance_reason": "期待結果通り、ExitCode「252」で異常終了し、指定されたログが出力されることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-2-3-1",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: DOMファイルパスのチェック: 入力ファイルの存在チェック: 入力ファイルが存在する",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.2",
+      "compliance_reason": "期待結果通り、「確認事項なく、引き続き処理」となることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-2-3-2",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: DOMファイルパスのチェック: 入力ファイルの存在チェック: 入力ファイルが存在しない",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.2",
+      "compliance_reason": "期待結果通り、ExitCode「245」で異常終了し、指定されたログが出力されることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-2-4-1",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: DOMファイル 0 バイトチェック: 0バイト以上の場合",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.2",
+      "compliance_reason": "期待結果通り、「確認事項なく、引き続き処理」となることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-2-4-2",
+      "requirement_content": "データファイル(DOM)からデータ加工: 前処理: DOMファイル 0 バイトチェック: 0バイトの DOMファイルの場合",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.2",
+      "compliance_reason": "期待結果通り、ExitCode「243」で異常終了し、指定されたログが出力されることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-3-1",
+      "requirement_content": "本処理 (Main): DOMファイルの読み取りおよびInputスキーマ構造データの構築: 指定列の値設定",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.2",
+      "compliance_reason": "仕様書に「此処のチェックは、Test Codeで検証する」とあり、エビデンスでも「テストCodeを利用して検証」としてOKとなっているため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-3-2-1-1",
+      "requirement_content": "本処理 (Main): DOMファイルの読み取りおよびInputスキーマ構造データの構築: 処理異常発生: 読み取りに失敗したファイル(loglevel:release)",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.3",
+      "compliance_reason": "期待結果通り、ExitCode「255」で異常終了し、指定されたログ（スタックトレースなし）が出力されることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-3-2-1-2",
+      "requirement_content": "本処理 (Main): DOMファイルの読み取りおよびInputスキーマ構造データの構築: 処理異常発生: 読み取りに失敗したファイル(loglevel:debug)",
+      "evaluation": "△",
+      "compliance_location": "エビデンス V2 P.3",
+      "compliance_reason": "ローカルログのスタックトレース出力について、仕様書では「出力なし」とされているが、エビデンスでは「出力あり」となっており、仕様と実装に乖離があるため。",
+      "correction_plan": "ローカルログのスタックトレース出力を仕様に合わせて「出力なし」に修正するか、仕様書を現状の動作（出力あり）に合わせて修正してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-4-2-1",
+      "requirement_content": "レコードの読み取りと保存（予期せぬ異常を確認）: 失敗した場合: エラーハンドリングを「resume」に設定する",
+      "evaluation": "△",
+      "compliance_location": "エビデンス V2 P.3",
+      "compliance_reason": "期待されるExitCodeが「124」であるのに対し、エビデンスでは「113」となっており、仕様と実装に乖離があるため。",
+      "correction_plan": "ExitCodeが仕様通り「124」となるように実装を修正するか、仕様書を現状の動作に合わせて「113」に修正してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-4-2-2",
+      "requirement_content": "レコードの読み取りと保存（予期せぬ異常を確認）: 失敗した場合: エラーハンドリングを「skip」に設定する",
+      "evaluation": "△",
+      "compliance_location": "エビデンス V2 P.3",
+      "compliance_reason": "期待されるExitCodeが「124」であるのに対し、エビデンスでは「113」となっており、仕様と実装に乖離があるため。",
+      "correction_plan": "ExitCodeが仕様通り「124」となるように実装を修正するか、仕様書を現状の動作に合わせて「113」に修正してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-4-2-3",
+      "requirement_content": "レコードの読み取りと保存（予期せぬ異常を確認）: 失敗した場合: エラーハンドリングを「terminate」に設定する",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.3",
+      "compliance_reason": "期待結果通り、ExitCode「255」で異常終了し、Parquetファイルが生成されないことがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-5-1",
+      "requirement_content": "後処理 (After): 正常・異常戻り値の確認: 正常完了",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.3",
+      "compliance_reason": "期待結果通り、正常のExitCode「0」が返却されることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "3-5-2",
+      "requirement_content": "後処理 (After): 正常・異常戻り値の確認: 異常終了",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.3",
+      "compliance_reason": "期待結果通り、各異常ケース（0バイトファイル、必須マクロ変数なし）でそれぞれのエラーExitCode（243, 252）が返却されることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "4",
+      "requirement_content": "データコンバート : レコードのカラム毎に操作",
+      "evaluation": "〇",
+      "compliance_location": "単体テスト仕様書 ケース V2 P.2",
+      "compliance_reason": "テスト仕様書に「部品一覧Excel UT仕様書のCase4-1にて既にテスト済みである」等と記載されており、本テストのスコープ外であることが確認されたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "5-1-1",
+      "requirement_content": "最終結果の確認: ファイルのフルパス確認",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.3",
+      "compliance_reason": "期待結果通り、指定された命名規則に従ってParquetファイルが生成されていることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "5-1-2",
+      "requirement_content": "最終結果の確認: ファイル内容の確認",
+      "evaluation": "×",
+      "compliance_location": "エビデンス V2 P.3",
+      "compliance_reason": "ファイル内容の確認において、期待結果と実際の結果に差異がある。具体的には、列「f013_sub_group_code」の期待値が「11.110」に対し実際は「11」、列「f013_fig_illust_disp_no」の期待値が「1」に対し実際は「1」と記載されているが、仕様書では「!ILLUST_DISP_NO!」の値は「01」と想定されているように見える。値の抽出ロジックが仕様と異なっている。",
+      "correction_plan": "DOMファイル名から値を抽出するロジックを見直し、列「f013_sub_group_code」が「11.110」、列「f013_fig_illust_disp_no」が期待通りの桁数（例：「01」）で正しく設定されるように修正してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "5-1-3",
+      "requirement_content": "最終結果の確認: 性能確認",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.4",
+      "compliance_reason": "メモリ使用量（458M）、CPU使用量（0.3）、実行時間（21s）が、それぞれ仕様書で定められた目標値（500M内、0.5内、30s内）を満たしているため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "6-1",
+      "requirement_content": "全体の正常系ログ出力確認: 出力メッセージ種別確認(loglevel:realse)",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.4",
+      "compliance_reason": "コンソール、ローカル、クラウドの各ログが、仕様書で期待されるメッセージ種別（Info）および内容で出力されていることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "6-2",
+      "requirement_content": "全体の正常系ログ出力確認: 出力メッセージ種別確認(loglevel:debug)",
+      "evaluation": "〇",
+      "compliance_location": "エビデンス V2 P.5",
+      "compliance_reason": "コンソール、ローカル、クラウドの各ログが、仕様書で期待されるメッセージ種別（Info, Process）および内容で出力されていることがエビデンスで確認できたため。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    }
+  ]
+}

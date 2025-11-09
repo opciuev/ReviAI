@@ -1,0 +1,244 @@
+{
+  "rows": [
+    {
+      "requirement_no": "REQ-0.1",
+      "requirement_content": "0.1 業務ユースケースの網羅性（T1）: 基本設計書と単体テスト仕様書に記載された業務ユースケースが、テストシナリオとして網羅的に洗い出されているか。",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.2",
+      "requirement_content": "0.2 業務シナリオの論理性（T2）: 複数の機能や画面をまたぐエンドツーエンドの業務シナリオについて、処理の流れやデータの受け渡しが論理的に検証可能となっているか。",
+      "evaluation": "〇",
+      "compliance_location": "■テスト概要, ■シナリオ",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.3",
+      "requirement_content": "0.3 システム間連携の観点（T3）: API、バッチ、ファイル連携など、他システムとのインターフェースについて、正常系・異常系（タイムアウト、リトライ、再送、冪等性など）のテスト観点が定義されているか。",
+      "evaluation": "〇",
+      "compliance_location": "■テスト観点",
+      "compliance_reason": "非対応理由（単体テストで担保し、システムテストのスコープ外とする）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "ご指摘の観点（タイムアウト、リトライ等）は、**単体テスト（UT）**の責務範囲としてカバレッジを担保しています。本システムテスト（ST）の目的は、正常系を中心としたコンポーネント間の連携フロー（E2E）の疎通確認に焦点を当てています。したがって、UTと責務が重複する環境系の異常系テストは、STのスコープ外とします。"
+    },
+    {
+      "requirement_no": "REQ-0.4",
+      "requirement_content": "0.4 非機能要件のテスト可能性（T4）: 性能（レスポンスタイム）、セキュリティ（権限、アクセス制御）、ユーザビリティ（画面表示崩れ）、可用性（障害・復旧）といった非機能要件が、テスト可能な形で観測可能になっているか。",
+      "evaluation": "〇",
+      "compliance_location": "■テスト観点 > ・正常系",
+      "compliance_reason": "非対応理由（単体テストで性能測定済みであり、システムテストのスコープ外とする）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "ご指摘の性能測定（例：5分以内）は、**単体テスト（UT）**の責務範囲として、コンポーネント単体での性能測定を実施済みです。本STの目的は、Argo WorkFlowを用いたE2Eフローが最後まで実行完了することを確認することであり、厳密な性能測定はスコープ外としています。"
+    },
+    {
+      "requirement_no": "REQ-0.5",
+      "requirement_content": "0.5 データシナリオの妥当性（T5）: マスタデータ、トランザクションデータ（通常データ、大容量データ、ゼロ件データ）など、システムテスト特有のデータパターンや、データの状態（例：月次、年度末）を考慮したシナリオが定義されているか。",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.6",
+      "requirement_content": "0.6 システム移行・切り戻しの観点（T6）: 該当する場合、データ移行（コンバージョン）のテストや、新旧システム切り替え・切り戻し（フォールバック）のテスト観点が定義されているか。",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.7",
+      "requirement_content": "0.7 テスト不能箇所の特定（T7）: 仕様の不足などによりテスト設計が不可能な箇所が特定され、必要な追加情報がリストアップされているか。",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "非対応理由（単体テストの責務範囲をテスト対象外として明記することは冗長との判断）がプロジェクトの方針として示されており、受諾可能であるため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "システムテスト（ST）の関心事は、**「Argo WorkFlow全体のE2Eフローが正常に実行完了すること」**にあります。ご指摘の「具体的な機能処理」（例：データ内容の検証）に関する観点は、**単体テスト（UT）**の責務範囲としてテストを完了しています。STのスコープとUTのスコープは意図的に分離しており、STにおいてテスト対象外（＝UTの責務）となる項目を本仕様書に記載することは冗長となるため、対応しません。"
+    },
+    {
+      "requirement_no": "REQ-1.1",
+      "requirement_content": "1.1 各テストケース（または業務シナリオ）において、「①前提条件」「②操作手順」「③期待結果」が具体的に記述され、因果関係が明確であるか。また、その前提条件が、要件定義書や外部設計書に記載された制約や仕様に基づいているか。",
+      "evaluation": "〇",
+      "compliance_location": "■テスト項目",
+      "compliance_reason": "非対応理由（システムテストの目的はE2Eフローの完了確認であり、件数の正確性検証はスコープ外）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "本テスト（ST）の目的は、「カタログ部品データ作成業務において、...ワークフローが自動的に起動し、累積Parquetファイルを生成する」というE2Eフローの実行完了を確認することです。期待結果における「xx件」という記述は、件数の正確性ではなく、**「処理が実行され、何らかのファイルが生成されたこと」**を確認できれば目的を達するため、具体的な数値への修正は不要と判断します。"
+    },
+    {
+      "requirement_no": "REQ-1.2",
+      "requirement_content": "1.2 曖昧な表現（例：「うまく」「必要に応じて」）が使われていないか。",
+      "evaluation": "〇",
+      "compliance_location": "■テスト項目 > 確認内容",
+      "compliance_reason": "非対応理由（「xx件」は意図的なプレースホルダーであり、件数検証は単体テストの責務範囲）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "本テスト仕様書における「xx件」という記述は、意図的なプレースホルダーです。本STの目的は、REQ-4.3の回答にも記載の通り、E2Eフローの実行完了を確認することであり、出力件数の正確性は単体テスト（UT）の責務範囲としています。そのため、「xx件」を具体的な数値に修正することは、本テストの目的にそぐわないため対応しません。"
+    },
+    {
+      "requirement_no": "REQ-1.3",
+      "requirement_content": "1.3 期待結果が「どのように・何を確認すべきか」まで明確に記述され、目視／ログ／DBなどの検証手段が示されているか。",
+      "evaluation": "〇",
+      "compliance_location": "■テスト項目 > 確認内容",
+      "compliance_reason": "非対応理由（ログの詳細内容は単体テストの責務範囲であり、システムテストではフロー全体の正常／異常判別で十分）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "REQ-0.7への回答と同様に、本STの関心事は「Argo WorkFlow全体のE2Eフローが正常に実行完了すること」です。個々の機能がどのようなログを出力するかといった詳細は、**単体テスト（UT）**の責務範囲として検証済みです。STではフロー全体の正常／異常がW/F実行結果やCloudLoggingで判別できればよいため、ログのキーワード指定までは行いません。"
+    },
+    {
+      "requirement_no": "REQ-2.0",
+      "requirement_content": "2. 簡潔性に関する要求（2.1～2.12）",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-3.0",
+      "requirement_content": "3. 内容の整合性に関する要求（3.1～3.8）",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.1",
+      "requirement_content": "4.1 操作手順の再現性: 第三者でも実行可能なレベルで操作手順が記述されているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト項目 > テスト手順",
+      "compliance_reason": "非対応理由（環境依存情報は別ドキュメントで一元管理し、仕様書のメンテナンス性を高める）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "ご指摘のGCSバケット名やパスといった具体的な環境情報は、**「テスト環境構築手順書」や「（プロジェクトの）操作マニュアル」**で一元管理されるべき情報です。テスト仕様書にこれらの環境依存情報をハードコードすることは、環境変更時のメンテナンス性を著しく低下させます。したがって、本仕様書は手順の「流れ」を記述することに留め、具体的な環境値の記載は行いません。"
+    },
+    {
+      "requirement_no": "REQ-4.2",
+      "requirement_content": "4.2 検証手段の明示: UI、ログ、DB、システム間連携の証跡 など、期待結果の検証手段が明示されているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト項目",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.3",
+      "requirement_content": "4.3 期待結果の明確性: 合否を客観的に判断できる定量的・具体的な記述となっているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト項目 > 確認内容",
+      "compliance_reason": "非対応理由（システムテストの目的はE2Eフローの完了確認であり、件数等の正確性検証は単体テストの責務）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "システムテスト（ST）の関心事は、**「Argo WorkFlowのプロセス全体が最後まで正常に実行完了すること」**です。途中のステップで生成されるファイルの「件数」や「内容」の正確性は、**単体テスト（UT）**の関心事です。STでは、各ステップ間のコンテキスト（データの受け渡し）が正常に行われ、フローが完走することを確認するため、個々の結果の具体的な数値は検証対象外とします。"
+    },
+    {
+      "requirement_no": "REQ-4.4",
+      "requirement_content": "4.4 テスト資産の再利用性: スクリプト・テストデータが将来の再利用を考慮しているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト項目 > テスト手順",
+      "compliance_reason": "非対応理由（テストデータを外部ファイルで一元管理し、二重管理による不整合リスクを避ける）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "ご指摘の通り、仕様書とテストデータ（Excel）は分離しています。しかし、レビュアーが提案する「仕様書内に概要を記載する」方法は、仕様書と実データ（Excel）との二重管理を招き、将来のメンテナンスにおいて不整合や更新漏れが発生するリスクが非常に高いです。テストデータの詳細は「正」である外部ファイル（Excel）で管理する現行の方式が、メンテナンス性と正確性の観点から最適であると判断します。"
+    },
+    {
+      "requirement_no": "REQ-4.5",
+      "requirement_content": "4.5 テスト環境の明示: 対象バージョンやテスト環境（本番同等環境、検証環境など）が明示されており、関連システムとの依存関係も考慮されているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト概要 > テスト環境",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.6",
+      "requirement_content": "4.6 異常時ログ・エラー出力の検証: エラー発生時のログ出力／エラーメッセージが仕様通りに記録・表示されるか",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ > ・異常系",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.7",
+      "requirement_content": "4.7 テストの実行方法の明示: 各テストが手動実行か、自動化されたテストコードによる実行かが明確に区別・記述されているか",
+      "evaluation": "△",
+      "compliance_location": "全体",
+      "compliance_reason": "非対応理由（手動実行であることの背景説明）が、テスト仕様書に実行方法を明記しない理由としては不十分。テストの前提条件として実行方法（手動）を明記すべきという指摘が解消されていない。",
+      "correction_plan": "(v2設計書に対し、REVIEW_RESPONSE_SHEETの対応方法を再実行してください)",
+      "response_status": "非対応",
+      "response_method": "テスト（ST）は、GCSへのファイル配置をトリガーとするArgo WorkFlow全体のE2E（エンドツーエンド）動作を確認するものです。これは複数のコンポーネント（GCS, Pub/Sub, Argo, 各バッチ処理）を横断する非同期処理であり、単純なテストコードによる自動化は困難です。本テストは、定義された手順書に基づく手動実行を前提としています。"
+    },
+    {
+      "requirement_no": "REQ-5.1",
+      "requirement_content": "5.1 要件定義・設計仕様との整合性: 要件定義書や外部設計書に記載された業務要件やシステム要件をテストで網羅しているか。特に、テストケースが、要件を実現するために定義された業務フローやシステム挙動を正確に反映しているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト概要, ■シナリオ",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-5.2",
+      "requirement_content": "5.2 テスト観点の網羅性: 正常系／異常系・例外系／境界値がバランスよく含まれているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト観点, ■シナリオ",
+      "compliance_reason": "非対応理由（境界値分析は単体テストの責務範囲であり、システムテストのスコープ外）が合理的かつ受諾可能であるため、v2設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "非対応",
+      "response_method": "REQ-0.7への回答と同様に、本STの関心事は「Argo WorkFlow全体のE2Eフローが正常に実行完了すること」です。ご指摘の「境界値」のようなデータの詳細な仕様に関する観点は、**単体テスト（UT）**の責務範囲としてテストを完了しています。STのスコープとUTのスコープは意図的に分離しているため、本仕様書への追記は行いません。"
+    },
+    {
+      "requirement_no": "REQ-5.3",
+      "requirement_content": "5.3 テストデータの妥当性: 使用するテストデータが目的に応じて適切に選定されているか",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ > テスト前提",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-5.4",
+      "requirement_content": "5.4 テストの独立性: 各テストケースが他の実行順序に依存せず、単独で実行可能になっているか（ただし、シナリオテストは除く）",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-5.5",
+      "requirement_content": "5.5 システム入力仕様の網羅性: テスト対象への入力（UI操作、APIリクエスト、バッチ投入ファイル等）自体の仕様（必須項目、データ型、許容値、フォーマット、大文字/小文字の区別等）に対するテスト観点が十分に考慮されているか",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ > ・異常系",
+      "compliance_reason": "初回レビューで適合と判断されており、修正は不要なため検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "",
+      "response_method": ""
+    }
+  ]
+}

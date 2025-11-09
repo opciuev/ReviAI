@@ -1,0 +1,74 @@
+{
+  "rows": [
+    {
+      "requirement_no": "SA-1",
+      "requirement_content": "SystemArchitect: 論理トレーサビリティの検証",
+      "evaluation": "△",
+      "compliance_location": "V7: 1.4 入力ファイルチェック",
+      "compliance_reason": "V6の設計書(2.4.1)に存在した「入力ファイル名が命名規則に従っているかのチェック」がV7では削除されている。必須マクロ変数の存在チェック(1.4.1)は残っているが、ファイル名自体の検証がなくなった理由が不明であり、呼び出し元プロセスに責務が移譲されたのか等の経緯が追跡できない。",
+      "correction_plan": "ファイル名の命名規則への準拠性チェックが不要になった理由、または責務がどのモジュールに移譲されたのかを注記として追記する。例：「注記：ファイル名の命名規則への準拠は、本プラグインの呼び出し元プロセスが保証するものとする。」",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "SA-2",
+      "requirement_content": "SystemArchitect: 機能要件と非機能要件の分離と結合",
+      "evaluation": "△",
+      "compliance_location": "1.4.3.2 Excelファイルの読み込み",
+      "compliance_reason": "GCSからストリーム経由でファイルを読み込むという性能を考慮した設計は記載されているが、それに伴う非機能要件（タイムアウト値、リトライ処理、巨大ファイル読み込み時のメモリ上限など）が定義されていない。これにより、実運用時の性能問題や信頼性の欠如に繋がる可能性がある。",
+      "correction_plan": "非機能要件として、GCS接続時のタイムアウト値、ネットワーク瞬断等の一時エラー発生時のリトライ回数と間隔、および本プラグインが処理を保証する最大ファイルサイズや行数を明記する。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "SA-3",
+      "requirement_content": "SystemArchitect: 指摘事項への準拠 (V6->V7改善点評価)",
+      "evaluation": "〇",
+      "compliance_location": "3-1.処理詳細説明(全体) API定義",
+      "compliance_reason": "V6のAPI定義と比較して、V7では`Before`メソッドに`LogUtil`インスタンスをDI（依存性注入）する形式に変更されている。また`After`メソッドも戻り値とout引数で結果を返す明確なI/Fとなっており、コンポーネントの疎結合化とテスト容易性が向上している。これはアーキテクチャとして優れた改善である。",
+      "correction_plan": "（評価が「〇」のため修正案なし）",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-1",
+      "requirement_content": "QAManager: 処理ロジックの具体性評価 (WDT分析)",
+      "evaluation": "×",
+      "compliance_location": "2.2.2 固定値の設定",
+      "compliance_reason": "「Do(処理)」の具体性が著しく欠如している。「部品一覧Excelファイル名から車両モデル『!FS_CAR_MODEL!』」のように、ファイル名から情報を抽出する仕様が記載されているが、その前提となるファイル名の命名規則や、マクロ変数を解析するための具体的なロジック（区切り文字、位置など）が一切定義されていない。この記述では実装もテストケース作成も不可能である。",
+      "correction_plan": "**【ゴールデンケース】**\n1. 参照するファイル名の命名規則を明記する。例: `部品一覧_{車両モデル}_{類別コード}_{メイングループコード}_{サブグループコード}_{抽出日}.xlsx`\n2. 各マクロ変数がファイル名のどの部分に、どのような形式（例: `抽出日`は`YYYYMMDD`形式）で含まれるかを定義する。\n3. マクロ変数がファイル名から抽出できなかった場合の例外処理（例: エラーログを出力し、処理を中断する）を定義する。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-2",
+      "requirement_content": "QAManager: 用語と定義の明確化",
+      "evaluation": "△",
+      "compliance_location": "1.4.4.4 Excelファイルレイアウトのチェック",
+      "compliance_reason": "処理対象となるExcelの列名に、「Part desc」（英語）、「MFTBC Price」（大文字略語）、「ﾒｰｶｰｺｰﾄﾞ」（半角カナ）など、言語や文字幅が統一されていない。これにより、入力ファイルの僅かな差異で処理エラーが発生する可能性があり、仕様として曖昧さが残る。",
+      "correction_plan": "処理対象のExcelヘッダの列名を、日本語（全角）に統一する。例：「Part desc」→「部品名称」、「MFTBC Price」→「MFTBC価格」、「ﾒｰｶｰｺｰﾄﾞ」→「メーカーコード」。仕様書内で許容する表記を一つに定める。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-3",
+      "requirement_content": "QAManager: 異常系の網羅性",
+      "evaluation": "〇",
+      "compliance_location": "1.3, 1.4, 2.2.3",
+      "compliance_reason": "ファイルの存在チェック、0バイトチェック、複数シート、カラム数・名称・順序の不一致など、ファイル入力に関する異常系が網羅的に定義され、それぞれに固有のExitCodeが割り当てられている。また、レコード単位のエラー発生時の挙動も「resume/skip/terminate」の3モードで定義されており、テスト設計に必要な情報が十分に記述されている。",
+      "correction_plan": "（評価が「〇」のため修正案なし）",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-4",
+      "requirement_content": "QAManager: 処理ロジックの具体性評価 (WDT分析)",
+      "evaluation": "△",
+      "compliance_location": "2.2.1 項目のマッピングとカラム操作",
+      "compliance_reason": "価格グループに関するカラム操作で「トリム後空文字になる場合は1バイトのスペースを設定する」という記述があるが、なぜこのような特殊な処理が必要なのか、その背景（ビジネスルールや後続システムの制約など）が一切説明されていない。理由が不明なため、この仕様が正しいかどうかをテスト担当者が判断できない。",
+      "correction_plan": "特殊な仕様の背景を注記として追記する。例：「注記：後続のデータ連携先システムが価格グループのNULL/空文字を許容しないため、空の場合は半角スペースをデフォルト値として設定する。」",
+      "response_status": "",
+      "response_method": ""
+    }
+  ]
+}

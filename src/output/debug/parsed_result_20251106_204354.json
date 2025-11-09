@@ -1,0 +1,244 @@
+{
+  "rows": [
+    {
+      "requirement_no": "REQ-0.1",
+      "requirement_content": "0.1 業務ユースケースの網羅性（T1）: 基本設計書と単体テスト仕様書に記載された業務ユースケースが、テストシナリオとして網羅的に洗い出されているか。",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ",
+      "compliance_reason": "ExcelファイルをアップロードしParquetファイルを生成するという主要な業務ユースケースについて、正常系・異常系のシナリオが網羅的に洗い出されている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.2",
+      "requirement_content": "0.2 業務シナリオの論理性（T2）: 複数の機能や画面をまたぐエンドツーエンドの業務シナリオについて、処理の流れやデータの受け渡しが論理的に検証可能となっているか。",
+      "evaluation": "〇",
+      "compliance_location": "■テスト概要, ■シナリオ",
+      "compliance_reason": "GCSへのファイルアップロードを起点とし、ワークフローを経てParquetファイルが生成されるまでの一連の処理の流れが定義されており、エンドツーエンドで検証可能なシナリオとなっている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.3",
+      "requirement_content": "0.3 システム間連携の観点（T3）: API、バッチ、ファイル連携など、他システムとのインターフェースについて、正常系・異常系（タイムアウト、リトライ、再送、冪等性など）のテスト観点が定義されているか。",
+      "evaluation": "△",
+      "compliance_location": "■テスト観点",
+      "compliance_reason": "GCSやPub/Subとの連携について、正常系の動作確認は含まれているが、タイムアウトやリトライといった連携時の異常系の観点が定義されていない。",
+      "correction_plan": "システム間連携の異常系テストとして、GCSへの接続タイムアウトやPub/Subへの通知失敗時などのシナリオを追加し、システムの挙動（リトライ処理、エラーログ出力など）を確認する項目を追記してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.4",
+      "requirement_content": "0.4 非機能要件のテスト可能性（T4）: 性能（レスポンスタイム）、セキュリティ（権限、アクセス制御）、ユーザビリティ（画面表示崩れ）、可用性（障害・復旧）といった非機能要件が、テスト可能な形で観測可能になっているか。",
+      "evaluation": "△",
+      "compliance_location": "■テスト観点 > ・正常系",
+      "compliance_reason": "「累積処理の所要時間が業務許容範囲内であること」という性能に関する観点は記載されているが、具体的な性能目標値（例: x分以内）、測定方法、およびそれを検証するためのテストケースが定義されていない。",
+      "correction_plan": "性能テストのケースを具体的に定義してください。例えば、「CaseXX：10万件のデータを含むExcelファイルを処理し、実行時間が5分以内であることを確認する」のように、データ量、期待される処理時間、測定方法を明記してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.5",
+      "requirement_content": "0.5 データシナリオの妥当性（T5）: マスタデータ、トランザクションデータ（通常データ、大容量データ、ゼロ件データ）など、システムテスト特有のデータパターンや、データの状態（例：月次、年度末）を考慮したシナリオが定義されているか。",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ",
+      "compliance_reason": "通常データ（Case01）、ゼロ件データ（Case02）、異常データを含むデータ（Case03-08）など、複数のデータパターンを考慮したシナリオが定義されている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.6",
+      "requirement_content": "0.6 システム移行・切り戻しの観点（T6）: 該当する場合、データ移行（コンバージョン）のテストや、新旧システム切り替え・切り戻し（フォールバック）のテスト観点が定義されているか。",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "本テスト仕様書の対象範囲は既存機能の改修ではなく、特定のバッチ処理に限定されるため、システム移行や切り戻しの観点は不要と判断できる。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-0.7",
+      "requirement_content": "0.7 テスト不能箇所の特定（T7）: 仕様の不足などによりテスト設計が不可能な箇所が特定され、必要な追加情報がリストアップされているか。",
+      "evaluation": "×",
+      "compliance_location": "全体",
+      "compliance_reason": "テスト設計を行う上で仕様が不足している箇所や、環境の制約等でテストが実施不可能な箇所を特定し、関係者と合意形成するための記載がない。",
+      "correction_plan": "「テスト制約事項」や「テスト対象外」といったセクションを設け、テストが実施できない項目とその理由を明記してください。これにより、テストのスコープが明確になります。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-1.1",
+      "requirement_content": "1.1 各テストケース（または業務シナリオ）において、「①前提条件」「②操作手順」「③期待結果」が具体的に記述され、因果関係が明確であるか。また、その前提条件が、要件定義書や外部設計書に記載された制約や仕様に基づいているか。",
+      "evaluation": "△",
+      "compliance_location": "■テスト項目",
+      "compliance_reason": "「前提条件」「操作手順」「期待結果」の構成は取られているが、期待結果の記述に「xx件」といった抽象的な表現が用いられており、具体性に欠ける。",
+      "correction_plan": "期待結果は「xx件」のようなプレースホルダーではなく、具体的な数値を記述してください。例：「36件が出力されること」。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-1.2",
+      "requirement_content": "1.2 曖昧な表現（例：「うまく」「必要に応じて」）が使われていないか。",
+      "evaluation": "△",
+      "compliance_location": "■テスト項目 > 確認内容",
+      "compliance_reason": "「xx件が出力されること」という表現が使用されており、テスト実施者が具体的な件数を別途確認する必要があるため、曖昧な表現に該当する。",
+      "correction_plan": "期待結果に記載する件数は、具体的な数値を明記してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-1.3",
+      "requirement_content": "1.3 期待結果が「どのように・何を確認すべきか」まで明確に記述され、目視／ログ／DBなどの検証手段が示されているか。",
+      "evaluation": "△",
+      "compliance_location": "■テスト項目 > 確認内容",
+      "compliance_reason": "検証手段（CloudLogging、W/F実行結果など）は示されているが、確認すべき内容が「処理情報が出力されること」のように抽象的で、具体的にどのようなログが出力されれば正常なのかが不明確な箇所がある。",
+      "correction_plan": "ログの確認項目では、確認すべきログメッセージの具体的な内容や、含まれるべきキーワード（例：「正常完了」、「エラーコード:XXX」）を明記してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-2.0",
+      "requirement_content": "2. 簡潔性に関する要求（2.1～2.12）",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "専門用語や文体は統一されており、冗長な表現や表記揺れは見られない。簡潔かつ客観的に記述されている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-3.0",
+      "requirement_content": "3. 内容の整合性に関する要求（3.1～3.8）",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "見出しの階層構造は論理的であり、番号体系にも矛盾はない。各セクションの内容は整合性が取れている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.1",
+      "requirement_content": "4.1 操作手順の再現性: 第三者でも実行可能なレベルで操作手順が記述されているか",
+      "evaluation": "△",
+      "compliance_location": "■テスト項目 > テスト手順",
+      "compliance_reason": "「ExcelファイルがGCSバケットにアップロード」といった操作手順が抽象的であり、具体的なバケット名、ファイルパスなどが記載されていないため、プロジェクトの前提知識がない第三者による再現が難しい可能性がある。",
+      "correction_plan": "操作手順に、使用するGCSバケットのパス（例：`gs://bucket-name/path/to/upload`）や、アップロードするテストデータのファイル名を明記してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.2",
+      "requirement_content": "4.2 検証手段の明示: UI、ログ、DB、システム間連携の証跡 など、期待結果の検証手段が明示されているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト項目",
+      "compliance_reason": "期待結果の検証手段として、作成されるファイル（YAML, Parquet）、GCSオブジェクトの状態、W/F実行結果、CloudLoggingが明示されている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.3",
+      "requirement_content": "4.3 期待結果の明確性: 合否を客観的に判断できる定量的・具体的な記述となっているか",
+      "evaluation": "×",
+      "compliance_location": "■テスト項目 > 確認内容",
+      "compliance_reason": "期待結果の記述が「xx件が出力されること」のように定量的でなく、客観的な合否判定が困難である。これはテストの品質を担保する上で重大な欠陥である。",
+      "correction_plan": "期待結果は、第三者が見ても合否を判断できるよう、具体的な数値を記載してください。例：「「36」件が出力されること」。また、ログの確認項目では、確認すべきログメッセージの具体的な内容やキーワードを明記してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.4",
+      "requirement_content": "4.4 テスト資産の再利用性: スクリプト・テストデータが将来の再利用を考慮しているか",
+      "evaluation": "△",
+      "compliance_location": "■テスト項目 > テスト手順",
+      "compliance_reason": "テストデータや期待結果の詳細が別紙のExcelシート（「Excelデータ_Input」シートなど）への参照となっており、仕様書単体での管理が煩雑になるため、将来的なメンテナンス性や再利用性が低下する懸念がある。",
+      "correction_plan": "主要なテストデータや期待結果の概要だけでも仕様書内に記載するか、参照する外部ファイル名とバージョンを明確に記載し、ドキュメントの自己完結性を高めることを検討してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.5",
+      "requirement_content": "4.5 テスト環境の明示: 対象バージョンやテスト環境（本番同等環境、検証環境など）が明示されており、関連システムとの依存関係も考慮されているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト概要 > テスト環境",
+      "compliance_reason": "テスト環境としてRancher Desktop、GCS、Argo System、MySQLのバージョンが具体的に明記されている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.6",
+      "requirement_content": "4.6 異常時ログ・エラー出力の検証: エラー発生時のログ出力／エラーメッセージが仕様通りに記録・表示されるか",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ > ・異常系",
+      "compliance_reason": "入力データ異常系、環境・設定異常系の各ケースにおいて、CloudLoggingへのログ出力を確認する項目が含まれており、網羅的に検証されている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-4.7",
+      "requirement_content": "4.7 テストの実行方法の明示: 各テストが手動実行か、自動化されたテストコードによる実行かが明確に区別・記述されているか",
+      "evaluation": "△",
+      "compliance_location": "全体",
+      "compliance_reason": "各テストが手動で実行されるのか、自動化されているのかが明記されていない。",
+      "correction_plan": "各テストケース、または全体の方針として、テストの実行方法（手動／自動）を明記してください。これにより、テスト工数の見積もりや実行計画の精度が向上します。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-5.1",
+      "requirement_content": "5.1 要件定義・設計仕様との整合性: 要件定義書や外部設計書に記載された業務要件やシステム要件をテストで網羅しているか。特に、テストケースが、要件を実現するために定義された業務フローやシステム挙動を正確に反映しているか",
+      "evaluation": "〇",
+      "compliance_location": "■テスト概要, ■シナリオ",
+      "compliance_reason": "提供されたテスト概要から推測されるシステム要件（Excelを処理しParquetを生成する）に対して、テストシナリオが整合している。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-5.2",
+      "requirement_content": "5.2 テスト観点の網羅性: 正常系／異常系・例外系／境界値がバランスよく含まれているか",
+      "evaluation": "△",
+      "compliance_location": "■テスト観点, ■シナリオ",
+      "compliance_reason": "正常系、異常系の観点は詳細に網羅されているが、入力データの境界値（例：定義された最大長ちょうどのデータ、許容される最大ファイルサイズなど）に関するテスト観点が欠落している。",
+      "correction_plan": "境界値分析の観点を追加してください。例えば、「セルの値がParquet項目で定義された最大長と一致するデータを入力し、正常に処理されることを確認する」といったテストケースを追記してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-5.3",
+      "requirement_content": "5.3 テストデータの妥当性: 使用するテストデータが目的に応じて適切に選定されているか",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ > テスト前提",
+      "compliance_reason": "各テストケースの目的に応じて、正常データ、0件データ、項目長超過データ、レイアウト不備データなど、適切なテストデータが選定されている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-5.4",
+      "requirement_content": "5.4 テストの独立性: 各テストケースが他の実行順序に依存せず、単独で実行可能になっているか（ただし、シナリオテストは除く）",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ",
+      "compliance_reason": "各テストケースは、特定の入力ファイルをGCSにアップロードすることから開始されており、他のケースの実行結果に依存しない構成となっている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-5.5",
+      "requirement_content": "5.5 システム入力仕様の網羅性: テスト対象への入力（UI操作、APIリクエスト、バッチ投入ファイル等）自体の仕様（必須項目、データ型、許容値、フォーマット、大文字/小文字の区別等）に対するテスト観点が十分に考慮されているか",
+      "evaluation": "〇",
+      "compliance_location": "■シナリオ > ・異常系",
+      "compliance_reason": "入力ファイル（Excel）の仕様に関して、レコード0件、データ長超過、レイアウト不備（項目名不正）といった観点がテストされており、入力仕様が十分に考慮されている。",
+      "correction_plan": "なし",
+      "response_status": "",
+      "response_method": ""
+    }
+  ]
+}

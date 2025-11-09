@@ -1,0 +1,2070 @@
+審査ステップ 
+1 事前準備：審査資料の整理 
+・今回のテスト仕様書、前回のテスト仕様書（初回は不要）設計書、BLレビューと議事録、3H社内レビュー、AIレビューと担当者判断を用意（選択可能） 
+・審査対象PDFに欠落・切れがないか目視で確認 
+・PDFファイルが複雑な場合は、無料のオンラインPDF結合ツールを使用して一括で結合し、マッジしてからアップロード。 https://www.ilovepdf.com/ 
+
+2 AIへの指示：審査条件を明示 
+・審査対象（設計書のファイル名）を明示 
+*前回テスト仕様書と今回テスト仕様書を区別 
+・使用する審査項目（第1〜第5項＋拡張項目第6〜第8項）を指定し、それぞれの審査項目に対応する資料をアップロードする 
+・必要であれば特定項目のみを絞って審査依頼も可能 
+・プロンプトの指示とプロンプトの内容を使用 
+
+3 出力データの整形と共有 
+・AI出力結果をGoogleスプレッドシート形式でエクスポート 
+
+4 審査結果の確認とレビュー 
+・AI出力の評価結果（〇／△／×）を確認 
+・不適合理由・修正案が妥当かを人の目でもチェック 
+・審査結果をGoogleスプレッドシートに反映し、フォーマットを整えた上で、現在審査がサイクル内のどの段階にあるのかを明示してください。 
+
+プロンプトの指示 
+添付されたテスト仕様書の内容について、以下の審査項目に基づいて漏れなく審査を実施してください。可能であれば、最大限の計算リソースで審査を行ってください。 
+以下の資料を参照してください： 
+
+【参考資料】 
+基本設計書：【ｘｘｘ基本設計書.pdf】 
+前回の単体テスト仕様書：【ｘｘｘ.pdf】 
+今回の単体テスト仕様書：【ｘｘｘ.pdf】 
+最新のルールブック：【ｘｘ₋ルールブック.pdf】 
+BLレビューと議事録：【BLレビューと議事録.ｐｄｆ】 
+3H社内レビュー ：【3H社内レビュー.ｐｄｆ  】 
+AIレビューと担当者判断：【AIレビューと担当者判断.ｐｄｆ】 
+
+【出力形式】  
+※ PDFファイルに切り取られた（途切れた）部分がある場合は、可能な限り内容をつなぎ合わせて審査してください。内容が判読できない場合は、その旨を明記してください。 
+※ 以下のすべての審査項目は、Googleスプレッドシートにエクスポート可能な形式で提示してください。 
+
+■ 評価結果表 
+まず、AIは以下の8列の形式で初期レビュー結果を出力します。この時点では、7列目と8列目は常に空欄です。 
+要求No｜要求内容｜評価（〇／△／×）｜適合/不適合箇所｜適合/不適合理由｜修正案｜対応有無｜対応方法／非対応理由 
+1.各要求Noについて、省略せずに、以下3つのいずれかの評価を使用して評価してください： 
+〇：適合 △：一部不適合 ×：不適合 
+2.同じ要求Noに複数の不適合がある場合は、行を分けて記載 
+3.「不適合箇所」は、セクション名・項番・キーワードなどで明確に特定すること 
+4.「不適合理由」は、分かりやすく簡潔にまとめてください。 
+5.「適合理由」は、任意で評価して構いませんが、今回が前回よりも改善されている場合は必ず評価を行ってください。  
+6.「修正案」は、具体的かつ明確に提示してください。 
+7.「対応有無」は、空欄にしてください。 
+8.「対応方法／非対応理由」は、空欄にしてください。 
+9.【拡張審査項目】の評価結果は、上記8点に加え、拡張審査項目の特有要件に従って出力してください。  
+
+プロンプトの内容 
+一、【審査項目と基準】 
+■ 0. テスト設計の前提と戦略に関する要求（テスト設計可能性の審査） 
+0.1 因子の分析と水準の定義（T1）: 各機能の可変条件（因子）と取りうる値（水準）が網羅的に洗い出され、同値クラス、境界値、デフォルト値、制約（排他・依存）が定義されているか。 
+0.2 決定表による論理網羅性（T2）: 複雑なビジネスルールが決定表などを用いてモデル化され、ルールの矛盾、冗長性、欠落が分析されているか。 
+0.3 組み合わせ戦略の妥当性（T3）: 因子が多い機能に対し、全網羅、ペアワイズ法、状態遷移網羅など、品質とコストのバランスを考慮した適切なテスト戦略が選択されているか。 
+0.4 状態モデルの明確性（T4）: 状態を持つ機能について状態遷移モデルが定義され、正常遷移、異常遷移、禁止遷移、タイムアウトなどが明確になっているか。 
+0.5 データ契約の検証可能性（T5）: 入出力データの各フィールドの制約（型、桁、精度、NULL可否、相関など）がテスト可能な形で定義されているか。 
+0.6 インターフェースの試験観点（T6）: APIやバッチ等のインターフェースについて、冪等性、再送、リトライ、レート制限といった、非機能要件を含むテスト観点が定義され、観測可能になっているか。 
+0.7 テスト不能箇所の特定（T7）: 仕様の不足などによりテスト設計が不可能な箇所が特定され、必要な追加情報がリストアップされているか。 
+
+■ 1. 論理構成と明確性に関する要求 
+1.1各テストケースにおいて、「①前提条件」「②操作手順」「③期待結果」が具体的に記述され、因果関係が明確であるか。また、その前提条件が、基本設計書に記載された設計制約や仕様に基づいているか。 
+1.2 曖昧な表現（例：「うまく」「必要に応じて」）が使われていないか。 
+1.3 期待結果が「どのように・何を確認すべきか」まで明確に記述され、目視／ログ／DBなどの検証手段が示されているか。 
+
+■ 2. 簡潔性に関する要求 
+2.1 専門用語・略語・外来語の使用が適切かつ一貫している 
+2.2 分かりやすい用語を使用している 
+2.3 評価に影響を与えない装飾語・曖昧な修飾表現が除去されている 
+2.4 テストケースは、読み手が一読して理解できる粒度・長さで説明されている 
+2.5 冗長な記述がない 
+2.6 重複表現がない 
+2.7 客観的に記述されている 
+2.8 説明的・叙述的に記述されている 
+2.9 受動態が使用されている 
+2.10 一人称表現（「我々」など）を使用していない 
+2.11 文体（「です・ます」体と「である」体）が統一されている 
+2.12 表記揺れ（例：「ログ出力」vs「ログの出力」）が存在しない 
+
+■ 3. 内容の整合性に関する要求 
+3.1 見出しに階層構造を用いているか 
+3.2 階層は4段階以内か 
+3.3 見出しの階層順に矛盾がないか 
+3.4 前後のテストケース間に論理矛盾がないか 
+3.5 見出しと本文の内容に技術的な齟齬がないか 
+3.6 重要なテストデータは図や表で整理されているか 
+3.7 セクションの分類構造が番号体系と対応しており、番号の抜け・重複・順序の乱れがないかを確認すること 
+3.8 「大分類・中分類・小分類・テスト条件・仕様」などの分類構造が、論理的かつ一貫しており、項目間の関係性に矛盾がないかを確認すること 
+
+■ 4. 品質の担保と再現性に関する要求 
+4.1 操作手順の再現性: 第三者でも実行可能なレベルで操作手順が記述されているか 
+4.2 検証手段の明示: UI、ログ、DB など、期待結果の検証手段が明示されているか 
+4.3 期待結果の明確性: 合否を客観的に判断できる定量的・具体的な記述となっているか 
+4.4 テスト資産の再利用性: スクリプト・テストデータが将来の再利用を考慮しているか 
+4.5 実行環境の明示: 対象バージョンや実行環境が明示されており、依存関係も考慮されているか 
+4.6 異常時ログ・エラー出力の検証: エラー発生時のログ出力／エラーメッセージが仕様通りに記録・表示されるか 
+4.7 テストの実行方法の明示: 各テストが手動実行か、自動化されたテストコードによる実行かが明確に区別・記述されているか 
+
+■ 5. テスト設計の妥当性と網羅性に関する要求 
+5.1 設計仕様との整合性と実装の反映: 基本設計書に記載された仕様をテストで網羅しているか。特に、テストケースが、仕様を実現するために実装された主要な処理や権限要求を正確に反映しているか 
+5.2 テスト観点の網羅性: 正常系／異常系・例外系／境界値がバランスよく含まれているか 
+5.3 テストデータの妥当性: 使用するテストデータが目的に応じて適切に選定されているか 
+5.4 テストの独立性: 各テストケースが他の実行順序に依存せず、単独で実行可能になっているか 
+5.5 入力仕様の網羅性: テスト対象への入力（設定ファイル等）自体の仕様（必須項目、データ型、許容値、フォーマット、大文字/小文字の区別等）に対するテスト観点が十分に考慮されているか 
+
+■ 6. ルールブックとの整合性に関する要求 
+6.1 【ルールブックとの全体整合性】：テスト仕様書全体（テストケース、テストデータ、期待結果を含む）が、共通ルールブックに定められた開発規約、命名規則、標準仕様と整合しているか。 
+6.2 【エラーハンドリングとログ出力の規約】：ルールブックに共通のエラーハンドリングやログ出力（例：フォーマット、必須出力項目、ログレベル）に関する規約が定義されている場合、テストケースがそれらの規約通りに動作することを網羅的に検証しているか。 
+6.3 【設定ファイルと起動パラメータの規約】：ルールブックに設定ファイル（例：命名規則、共通設定と個別設定の上書き順序）や起動パラメータに関する共通規約が定義されている場合、テストケースがその規約に従った動作を検証しているか。 
+6.4 【データ処理・変換の共通ルール】：ルールブックにデータ操作に関する共通ルール（例：データ型ごとの初期値、項目マッピングの標準方式、共通の変換・計算関数など）が定義されている場合、テストケースがそれらのルールに基づいたデータ処理を網羅的に検証しているか。 
+6.5 【アーキテクチャ・設計原則の規約】：ルールブックに、モジュール間の連携方法や責務の分離といったアーキテクチャ上の設計原則が定義されている場合、テストケースがその原則を遵守していることを（MockやStubの利用を通じて）検証しているか。 
+
+※第7～第9項は【拡張審査項目】であり、【BLレビューと議事録】／【3H社内レビュー  】／【AIレビューと担当者判断】 に基づくものです。 
+
+二、【拡張審査項目】 
+
+■7. BLレビューと議事録 
+内容 
+本項目は、前回のテスト仕様書に対して、BL（顧客）が実施したレビュー指摘とその議事録をまとめたもの。 
+審査方法 
+今回のテスト仕様書において、BLからの指摘内容に対応できているかを確認する。 
+出力形式 
+「審査項目と基準」に基づき、BLの指摘内容を審査観点として抽出し、【第6項】として評価する。 
+【要求No】：BLレビューまとめの番号順に並べてください  
+【要求内容】：BLレビューまとめの内容をそのままコピーしてください  
+【評価】：BLレビューまとめの内容に対応しているかどうかを確認し、今回のテスト仕様書について評価結果（〇／△／×）を記載してください  
+【適合/不適合理由】：対応済みである理由、または未対応の理由を分析して簡潔に記載してください  
+【修正案】：未対応の理由に基づき、具体的な修正案を提示してください  
+
+■ 8. 3H社内レビュー  
+内容 
+本項目は、前回のテスト仕様書に対して、BLレビュー後に、3H社内で実施された再レビューによる指摘内容のまとめ。 
+審査方法 
+今回のテスト仕様書において、社内からの指摘内容に対応できているかを確認する。 
+出力形式 
+「審査項目と基準」に基づき、社内指摘を審査観点として抽出し、【第7項】として評価する。 
+【要求No】：社内レビューまとめの番号順に並べてください  
+【要求内容】：社内レビューまとめの内容をそのままコピーしてください  
+【評価】：社内レビューまとめの内容に対応しているかどうかを確認し、今回のテスト仕様書について評価結果（〇／△／×）を記載してください  
+【適合/不適合理由】：対応済みである理由、または未対応の理由を分析して簡潔に記載してください  
+【修正案】：未対応の理由に基づき、具体的な修正案を提示してください  
+
+■9. AIレビューと担当者判断 
+内容 
+本項目は、前回の審査において「△」または「×」と評価された審査項目に対し、担当者が「非対応」と判断した場合、その対応方法または非対応理由について再審査を行う。 
+審査方法 
+① 担当者の理由が妥当な場合：前回評価の「△」または「×」を、今回評価の「〇」に変更してください。 
+【適合/不適合理由】には【AIによる承認理由】として、「非対応」の判断が妥当と見なされる根拠を具体的に記述してください。 
+以下の観点は一例であり、すべてのケースを網羅するものではない： 
+ビジネス上の判断：プロジェクトのスコープ外、コスト対効果に見合わない、納期優先など 
+技術的な制約：使用ライブラリの制限、プラットフォームの仕様などにより物理的な対応が困難 
+代替策の提示：指摘されたリスクに対して、設計変更以外の方法（例：運用カバー）で十分に対応可能 
+影響の軽微性：指摘内容が、システムの動作や品質に与える影響が極めて軽微である 
+② 担当者の理由が妥当でない場合：前回評価の「△」または「×」を今回も維持してください。 
+【適合/不適合理由】には【AIによる再反論】として、提示された理由が不十分である根拠や、依然として残るリスクを具体的に記述し、新たな修正案を提示してください。 
+出力形式 
+「審査項目と基準」に基づき、担当者の判断結果を審査観点として抽出し、【第8項】として評価を行ってください。 
+【要求No】：初回審査時のNoを含めて（括弧で）記載してください 
+【要求内容】：初回と同一の内容を記載してください 
+【評価】：今回の評価結果（〇／△／×）を記載してください 
+【適合/不適合理由】：【AIによる承認理由】または【AIによる再反論】として記述してください 
+【修正案】：担当者が前回の修正案に対応していない場合は前回の修正案を維持し、意見がある場合はその内容を踏まえた新たな修正案を提示してください 
+
+# PDF Content (Markdown format):
+
+
+================================================================================
+ドキュメント: (No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_サブグループ別部品情報リストDOMファイルレコード生成_エビデンス_V2.pdf (PDF 1)
+ファイル名: (No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_サブグループ別部品情報リストDOMファイルレコード生成_エビデンス_V2.pdf
+================================================================================
+
+1
+1-1
+1-2
+1-3
+2
+
+2-1
+2-2
+
+2-3
+
+3
+
+3-1-1
+
+3-1-1-1
+
+3-1-1-2
+
+3-1-2-2
+
+3-2
+
+3-2-1
+
+3-2-1-1
+
+3-2-1-2
+
+3-2-2
+
+3-2-2-1
+
+3-2-2-2
+
+3-2-3
+
+3-2-3-1
+
+3-2-3-2
+
+3-2-4
+
+3-2-4-1
+
+3-2-4-2
+
+システム名
+
+機能名
+
+f013カタログ部品データ作成
+
+サブグループ別部品情報リストDOMファイルレコード生成
+
+■エビデンスケースＮｏ
+
+№パターン№
+
+　入力値あるいは操作
+ツール起動
+起動時のパラメータ確認
+データベース接続
+配置ファイル存在チェック
+現在のプログラムで実行されている LineageId の特定および設定内容のチェック
+※起動時のパラメータ
+
+　期待される結果
+結果
+テストコード
+なし
+無事に起動できること
+なし
+無事に起動できること
+なし
+無事に起動できること
+
+-n：market-vehicle-data
+-w：workflow-01m0013p001004-znp7k-c7r4k
+プロセスIDとタスクIDをもとにリネージ情報を取得
+専用プラグインのチェック
+
+ファイルパスのチェック
+
+データファイル(DOM)からデータ加工（専用ブラグイン経由）
+
+※起動時のパラメータ
+
+-n：market-vehicle-data
+-w：workflow-01m0013p001004-znp7k-c7r4k
+
+前処理 (Before)
+
+なし
+なし
+なし
+
+部品一覧Excel UT仕様書のCase1-1にて既にテスト済みである
+部品一覧Excel UT仕様書のCase1-1にて既にテスト済みである
+部品一覧Excel UT仕様書のCase1-1にて既にテスト済みである
+
+3-1
+
+リネージ設定情報および入力ファイルチェック
+
+lineageID: 130021
+
+「リソース管理」テーブルに、当リネージが使ってるリソースの設定情報チェック
+    必須項目のチェック：文字コード（code_page）
+文字コード（code_page）が設定の場合
+
+確認事項なく、引き続き処理
+
+文字コード（code_page）が未設定の場合  ※システム系エラー（エラーハンドリングと関係ない）
+
+なし
+
+なし
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 当リネージID「130021」の「リソース管理」テーブルにて、文字コード（code_page）の設定がされていません。
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 当リネージID「130021」の「リソース管理」テーブルにて、文字コード（code_page）の設定がされていません。
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 当リネージID「130021」の「リソース管理」テーブルにて、文字コード（code_page）の設定がされていません。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-1-1-2 を参照。
+
+3-1-2
+
+InputスキーマYamlに、下記の項目は必須です
+
+  列「f013_car_model」
+  列「f013_car_model_classification_code」
+  列「f013_main_group_code」
+  列「f013_sub_group_code」
+  列「f013_fig_illust_disp_no」
+  列「f013_subgrp_parts_list_dom_content」
+    InputスキーマYamlに、必須項目存在チェック
+
+3-1-2-1
+
+必須項目「項目ID（item_id）」が 入力スキーマに存在する場合
+
+なし
+
+確認事項なく、引き続き処理
+
+必須項目「項目ID（item_id）」が 入力スキーマに存在しない場合   ※システム系エラー（エラーハンドリングと関係ない）
+
+ExitCode：253
+
+なし
+
+異常終了
+
+コンソールログ出力
+
+実施結果
+
+※　テスト結果を詳細に記載出来ない　または　ハードコピーなどが
+　ある場合はシートを追加し、資料列にシート名を記載します。
+
+１回目
+判定 実施日
+
+２回目
+担当 判定 実施日
+
+担当
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_サブグループ別部品情報リストDOMファイルレコード生成.xlsxエビデンス
+
+-
+
+ExitCode：255
+異常終了
+
+-
+
+-
+
+-
+
+OK 2025/11/3
+
+TH.尚
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+当リネージID「130021」の「リソース管理」テーブルにて、文字コード（code_page）の設定がされていません。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+当リネージID「130021」の「リソース管理」テーブルにて、文字コード（code_page）の設定がされていません。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+当リネージID「130021」の「リソース管理」テーブルにて、文字コード（code_page）の設定がされていません。
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-1-1-2 を参照。
+
+-
+
+exitCode：253
+
+異常終了
+
+-
+
+-
+
+-
+
+NG 2025/11/3
+
+TH.尚OK 2025/11/3 TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：当リネージID「130021」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」に、必須項目「f013_car_model, f013_car_model_classification_code, f013_main_group_code, f013_sub_group_code, f013_fig_illust_disp_no, f013_subgrp_parts_list_dom_content」がないです。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+リソース管理テーブルにて、リネージID「130021」で指定されたスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」に、必須列「f013_car_model_classification_code, f013_main_group_code, f013_sub_group_code, f013_fig_illust_disp_no, f013_subgrp_parts_list_dom_content」が存在しません。ご確認ください。
+当リネージID「130021」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」に、必須項目「f013_car_model, f013_car_model_classification_code, f013_main_group_code, f013_sub_group_code, f013_fig_illust_disp_no, f013_subgrp_parts_list_dom_content」がないです。
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：当リネージID「130021」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」に、必須項目「f013_car_model, f013_car_model_classification_code, f013_main_group_code, f013_sub_group_code, f013_fig_illust_disp_no, f013_subgrp_parts_list_dom_content」がないです。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+リソース管理テーブルにて、リネージID「130021」で指定されたスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」に、必須列「f013_car_model_classification_code, f013_main_group_code, f013_sub_group_code, f013_fig_illust_disp_no, f013_subgrp_parts_list_dom_content」が存在しません。ご確認ください。
+当リネージID「130021」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」に、必須項目「f013_car_model, f013_car_model_classification_code, f013_main_group_code, f013_sub_group_code, f013_fig_illust_disp_no, f013_subgrp_parts_list_dom_content」がないです。
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：当リネージID「130021」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」に、必須項目「f013_car_model, f013_car_model_classification_code, f013_main_group_code, f013_sub_group_code, f013_fig_illust_disp_no, f013_subgrp_parts_list_dom_content」がないです。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+リソース管理テーブルにて、リネージID「130021」で指定されたスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」に、必須列「f013_car_model_classification_code, f013_main_group_code, f013_sub_group_code, f013_fig_illust_disp_no, f013_subgrp_parts_list_dom_content」が存在しません。ご確認ください。
+当リネージID「130021」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」に、必須項目「f013_car_model, f013_car_model_classification_code, f013_main_group_code, f013_sub_group_code, f013_fig_illust_disp_no, f013_subgrp_parts_list_dom_content」がないです。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-1-2-2 を参照。
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-1-2-2 を参照。
+
+DOMファイルパスのチェック
+
+命名規則内のマクロ変数の存在チェック
+命名規則内のマクロ変数が存在する
+
+なし
+
+確認事項なく、引き続き処理
+
+f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_!ILLUST_DISP_NO!_parts_!ACQUISITION_YYYYMMDD!_ver0001.html
+
+命名規則内のマクロ変数が存在しない
+
+確認事項なく、引き続き処理
+f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html
+
+なし
+
+入力ファイル命名規則に必須のマクロ変数が含まれているかのチェック
+
+ファイルのフルパスにマクロ変数の対応値が存在する なし
+
+確認事項なく、引き続き処理
+
+ファイルのフルパスにマクロ変数の対応値が存在しない    ※システム系エラー（エラーハンドリングと関係ない）
+
+なし
+ DOMファイル:f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html
+
+ExitCode：252
+
+異常終了
+
+コンソールログ出力
+
+-
+
+-
+
+-
+
+ExitCode：252
+
+異常終了
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+-
+
+OK 2025/11/3
+
+TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：当リネージID「130021」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_!ILLUST_DISP_NO!_parts_!ACQUISITION_YYYYMMDD!_ver0001.html」に必須マクロ変数「!FS_CAR_MODEL!」がないです。
+
+当リネージID「130021」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_!ILLUST_DISP_NO!_parts_!ACQUISITION_YYYYMMDD!_ver0001.html」に必須マクロ変数「!FS_CAR_MODEL!」がないです。
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：当リネージID「130021」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_!ILLUST_DISP_NO!_parts_!ACQUISITION_YYYYMMDD!_ver0001.htmlに必須マクロ変数「!FS_CAR_MODEL!」がないです。
+
+当リネージID「130021」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_!ILLUST_DISP_NO!_parts_!ACQUISITION_YYYYMMDD!_ver0001.html」に必須マクロ変数「!FS_CAR_MODEL!」がないです。
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+
+ログ内容：当リネージID「130021」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_!ILLUST_DISP_NO!_parts_!ACQUISITION_YYYYMMDD!_ver0001.html」に必須マクロ変数「!FS_CAR_MODEL!」がないです。
+
+当リネージID「130021」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「f013_f0002_!BL_CATALOG_NO!_!FS_CAR_MODEL!_!FS_CAR_NAME_CD!_!FS_CAR_MODEL_CLSSFN!_!FS_MAINGRP_CD!_!FS_SUBGRP_CD!_!ILLUST_DISP_NO!_parts_!ACQUISITION_YYYYMMDD!_ver0001.html」に必須マクロ変数「!FS_CAR_MODEL!」がないです。
+
+入力ファイルの存在チェック
+
+入力ファイルが存在する
+
+なし
+
+確認事項なく、引き続き処理
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-3-2 を参照。
+
+入力ファイルが存在しない   ※システム系エラー（エラーハンドリングと関係ない）
+    DOMファイル:f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_03_parts_20250101_ver0001.html
+
+なし
+
+ExitCode：245
+異常終了
+コンソールログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-2-2 を参照。
+
+-
+
+-
+
+-
+
+-
+
+OK 2025/11/3
+
+TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が見つかりません。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が見つかりません。
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が見つかりません。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が見つかりません。
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容： 対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が見つかりません。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が見つかりません。
+
+DOMファイル 0 バイトチェック
+    0バイト以上の場合
+
+なし
+
+確認事項なく、引き続き処理
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-4-2 を参照。
+
+    0バイトの DOMファイルの場合
+
+  ※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+ExitCode：243
+
+なし
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-3-2 を参照。
+
+-
+
+-
+
+-
+
+-
+
+OK 2025/11/3
+
+TH.尚
+
+異常終了
+コンソールログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が0バイトで、累積処理を実行できません。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が0バイトで、累積処理を実行できません。
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が0バイトで、累積処理を実行できません。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が0バイトで、累積処理を実行できません。
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が0バイトで、累積処理を実行できません。
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が0バイトで、累積処理を実行できません。
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-5-2 を参照。
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-2-4-2 を参照。
+
+本処理 (Main)
+
+3-3
+
+DOMファイルの読み取りおよびInputスキーマ構造データの構築
+
+3-3-1
+
+指定列の値設定(使用データ:Case 3-2 の「DOMファイル」を参照)なし
+    DOMファイル名から
+
+シート「使用データ 」Case 3-3 の「期待結果」を参照（※テストCodeを利用して検証）
+
+シート「使用データ 」Case 3-3 の「期待結果」を参照
+
+OK 2025/11/3
+
+TH.尚
+
+列「f013_car_model」
+列「f013_car_model_classification_code」
+列「f013_main_group_code」
+列「f013_sub_group_code」
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+列「f013_fig_illust_disp_no」
+
+    DOMファイル内容から
+
+列「f013_subgrp_parts_list_dom_content」
+
+3-3-2
+
+3-3-2-1
+
+3-3-2-1-1
+
+異常ケースあり、エラーログを出し
+
+読み取りに失敗
+※存在しない文字コードを設定する
+loglevel: release
+
+なし
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_サブグループ別部品情報リストDOMファイルレコード生成.xlsxエビデンス
+
+OK 2025/11/3
+
+TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力なし
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力なし
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力なし
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力なし
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力あり
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力あり
+
+3-3-2-1-2
+
+loglevel: debug
+
+なし
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-3-2-1 を参照。
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-3-2-1-1 を参照。
+
+OK 2025/11/3
+
+TH.尚
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力なし
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力なし
+
+ローカルログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力あり
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力あり
+
+クラウドログ出力
+
+ログタイトル： (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力あり
+
+NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId:
+utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力あり
+
+データリネージ実行ログ出力
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-3-2-1 を参照。
+
+レコードの読み取りと保存（予期せぬ異常を確認）
+
+成功した場合
+
+失敗した場合
+
+なし
+
+確認事項なく、引き続き処理
+
+・エラーハンドリング　を「resume」に設定する あり
+
+3-4-2-2
+
+・エラーハンドリング　を「skip」に設定する あり
+
+3-4-2-3
+
+・エラーハンドリング　を「terminate」に設定するあり
+
+ExitCode：255
+異常終了、Parquetファイルが生成されない
+
+ExitCode：124
+空のParquetファイルが生成される
+
+ExitCode：124
+空のParquetファイルが生成される
+
+後処理 (After)
+
+正常・異常戻り値の確認
+正常完了
+
+異常終了
+
+0バイトのファイル
+
+命名規則に必須マクロ変数がない
+
+あり
+
+あり
+
+正常の ExitCode：0が返されます。
+ログ内容： 「サブグループ別部品情報リストDOMファイルレコード生成」が正常完了しました。
+
+エラーの ExitCode が返されます。
+
+データコンバート : レコードのカラム毎に操作
+
+データ型変換
+データの長さチェック
+
+Parquetファイルの作成
+
+Parquetファイル出力
+
+なし
+なし
+
+部品一覧Excel UT仕様書のCase1-1にて既にテスト済みである
+部品一覧Excel UT仕様書のCase1-1にて既にテスト済みである
+
+Path + Nameはどこで、何の設定どおりで作成できたこと
+
+3-4
+
+3-4-1
+
+3-4-2
+
+3-4-2-1
+
+3-5
+
+3-5-1
+
+3-5-2
+
+4
+
+4-1
+
+4-2
+
+5
+
+5-1
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 3-3-2-1-2 を参照。
+
+-
+
+-
+
+-
+
+-
+
+ExitCode：113
+空のParquetファイルが生成される
+
+ExitCode：113
+空のParquetファイルが生成される
+
+OK 2025/11/3
+
+TH.尚
+
+OK 2025/11/3
+
+TH.尚
+
+OK 2025/11/3
+
+TH.尚
+
+0
+
+OK 2025/11/4
+
+TH.尚
+
+OK 2025/11/4
+
+TH.尚
+
+ExitCode：243
+メッセージ内容：対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が0バイトで、累積処理を実行できません。
+ExitCode：252
+メッセージ内容：対象データファイル「gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」が0バイトで、累積処理を実行できません。
+
+243
+
+252
+
+最終結果の確認 (使用データ:Case 5-1 の「DOMファイル」を参照)
+
+5-1-1
+
+    ファイルのフルパス確認
+
+フルパス
+
+5-1-2
+
+    ファイル内容の確認
+
+        DOMファイル名から
+
+なし
+
+なし
+
+チェック内容は、「使用データ 」シートのCase 5-1 の「期待結果」を参照する
+gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_illust_dom_035103_FDA60_EH4_B21S003_11_11.110_01_ac_20250101_ver0001.parquet
+
+「使用データ 」シートのCase 5-1 の「期待結果」を参照する
+gs://b144-cloud-storage-yang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_illust_dom_035103_FDA60_EH4_B21S003_11_11.110_01_ac_20250101_ver0001.parquet
+
+OK 2025/11/3
+
+TH.尚
+
+シート「使用データ 」Case 5-1 の「期待結果」を参照(※Parquetファイルの確認)
+
+OK 2025/11/3
+
+TH.尚
+
+列「f013_car_model」
+列「f013_car_model_classification_code」
+列「f013_main_group_code」
+列「f013_sub_group_code」
+列「f013_fig_illust_disp_no」
+
+FDA60
+B21S003
+11
+11.110
+1
+
+        DOMファイル内容から
+
+FDA60
+B21S003
+11
+11
+1
+
+列「f013_subgrp_parts_list_dom_content」
+
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>PC_Resultpg</title><link rel="shortcut icon" href="/images/faviconnew.ico" type="image/x-icon"><link rel="icon" href="data:image/x-icon;," type="image/x-icon"><meta name="description" content=""><meta name="keywords" content=""><meta name="author" content=""></head><body class=""><input name="__RequestVerificationToken" type="hidden" value="CfDJ8HHtrUGMkLBBi-zK-SNZl5JBiK7OVFb990G-yBKGak_0xLbQjCV0JSLLvwGlL-cai2zcgWLMBobZr-d9Xb_e-NGVY1tHVDLYraj6GX6iqEWM7ZNy41iTuDRAfDs_mbU_KX7q2KKcgIKsdQY07iKNyIMINY_R2ZOp66tB8fo1-DL3SNR2ps24oUe4BsJdR5tEcA"><div class="loder-container d-none"><div class="center"><div class="logo-container"></div></div></div><input type="hidden" id="layhdsharepath" value="https://XXXXXXXXX.blob.core.windows.net/&amp;&amp;&amp;&amp;&amp;/FAFS/PDFjs/xxx/viewer.html?file=../../Artfiles/"><div id="divSessionDebug" style="display: none;"><span id="ExtendTime"></span> /
+
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>PC_Resultpg</title><link rel="shortcut icon" href="/images/faviconnew.ico" type="image/x-icon"><link rel="icon" href="data:image/x-icon;," type="image/x-icon"><meta name="description" content=""><meta name="keywords" content=""><meta name="author" content=""></head><body class=""><input name="__RequestVerificationToken" type="hidden" value="CfDJ8HHtrUGMkLBBi-zK-SNZl5JBiK7OVFb990G-yBKGak_0xLbQjCV0JSLLvwGlL-cai2zcgWLMBobZr-d9Xb_e-NGVY1tHVDLYraj6GX6iqEWM7ZNy41iTuDRAfDs_mbU_KX7q2KKcgIKsdQY07iKNyIMINY_R2ZOp66tB8fo1-DL3SNR2ps24oUe4BsJdR5tEcA"><div class="loder-container d-none"><div class="center"><div class="logo-container"></div></div></div><input type="hidden" id="layhdsharepath" value="https://XXXXXXXXX.blob.core.windows.net/&amp;&amp;&amp;&amp;&amp;/FAFS/PDFjs/xxx/viewer.html?file=../../Artfiles/"><div id="divSessionDebug" style="display: none;"><span id="ExtendTime"></span> /
+
+5-1-3
+
+    性能確認
+
+なし
+
+大容量DOMファイルを用いた性能検証(Size: 10MB)
+
+メモリ使用量
+CPU 使用量
+実行時間
+
+500M内
+0.5内
+30s内
+
+6
+
+6-1
+
+全体の正常系ログの出力確認
+
+出力メッセージ種別確認(loglevel:realse)
+
+コンソールログ出力
+
+なし
+
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始します...
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 正常件数：1
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 異常件数：0
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」が正常完了しました。
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力ファイル: gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_illust_dom_035103_FDA60_EH4_B21S003_11_11.110_01_ac_20250101_ver0001.parquet
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力レコード件数: 1
+
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報＆イラストdom累積作成」が正常完了しました。
+
+ローカルログ出力
+
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+
+クラウドログ出力
+
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始します...
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 正常件数：1
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 異常件数：0
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」が正常完了しました。
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力ファイル: gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_illust_dom_035103_FDA60_EH4_B21S003_11_11.110_01_ac_20250101_ver0001.parquet
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力レコード件数: 1
+
+[情報    ] (NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報＆イラストdom累積作成」が正常完了しました。
+
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始します...
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 正常件数：1
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」が正常完了しました。
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力ファイル: gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_illust_dom_035103_FDA60_EH4_B21S003_11_11.110_01_ac_20250101_ver0001.parquet
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力レコード件数: 1
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+(NameSpace: market-vehicle-data-realse WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報＆イラストdom累積作成」が正常完了しました。
+
+データリネージ実行ログ出力
+
+・データリネージ実行ログテーブル：
+       データリネージ実行ログ：シート「データリネージ実行ログ」の Case 6-1 を参照。
+
+458 M
+0.3
+21s
+
+OK 2025/11/3
+
+TH.尚
+
+OK
+
+2025/11/3
+
+TH.尚
+
+[2025-11-03 19:32:26] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+[2025-11-03 19:32:27]
+[2025-11-03 19:32:28] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「プラグイン振分モジュール」を開始します...
+[2025-11-03 19:32:28] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始
+します...
+[2025-11-03 19:32:30] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+正常件数：1
+[2025-11-03 19:32:30] [情報    ] (NameSpace: market-vehicle-data-realse
+[2025-11-03 19:32:26] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+[2025-11-03 19:32:27]
+[2025-11-03 19:32:28] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「プラグイン振分モジュール」を開始します...
+[2025-11-03 19:32:28] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始
+します...
+[2025-11-03 19:32:30] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+正常件数：1
+[2025-11-03 19:32:30] [情報    ] (NameSpace: market-vehicle-data-realse
+[2025-11-03 19:32:26] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+[2025-11-03 19:32:27]
+[2025-11-03 19:32:28] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「プラグイン振分モジュール」を開始します...
+[2025-11-03 19:32:28] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始
+します...
+[2025-11-03 19:32:30] [情報    ] (NameSpace: market-vehicle-data-realse
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+正常件数：1
+[2025-11-03 19:32:30] [情報    ] (NameSpace: market-vehicle-data-realse
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 6-2 を参照。
+
+6-2
+
+出力メッセージ種別確認(loglevel:debug)
+
+なし
+
+OK 2025/11/3
+
+TH.尚
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_サブグループ別部品情報リストDOMファイルレコード生成.xlsxエビデンス
+
+コンソールログ出力
+
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+
+ローカルログ出力
+
+クラウドログ出力
+
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 転記仕様のYAMLファイル「/workspace/transform\transform_spec_130021.yml」の読み込み 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 対象データファイル「gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」の読み込み 実行
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」 取得
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」のロード
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分けモジュール : 前処理Before()メソッド呼出し
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始します...
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 前処理(Beforeメソッド) 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 引数(JSON)内容の解析
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 指定のInputスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」
+のチェック 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) サブグループ別部品情報リストDOMファイル「gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」のファイルチェック 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分けモジュール : 本処理Main()メソッド呼出し
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 本処理(Mainメソッド) 実行
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 正常件数：1
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 異常件数：0
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分けモジュール : 後処理After()メソッド呼出し
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 後処理(Afterメソッド) 実行
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」が正常完了しました。
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 入力スキーマ YAML「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」ファイルを
+解析し、標準転記の表現式を取得します...
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力スキーマ YAML「/workspace/schema/f013_web_catalog_parts_info_illust_dom_acm.yaml」ファイルを
+解析し、標準転記の表現式を取得します...
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) データレコードのコンバート完了、出力ファイルに「1」件のレコードを追加。
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力ファイル: gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_illust_dom_035103_FDA60_EH4_B21S003_11_11.110_01_ac_20250101_ver0001.parquet
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 転記仕様のYAMLファイル「/workspace/transform\transform_spec_130021.yml」の読み込み 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 対象データファイル「gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」の読み込み 実行
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」 取得
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」のロード
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分けモジュール : 前処理Before()メソッド呼出し
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始します...
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 前処理(Beforeメソッド) 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 引数(JSON)内容の解析
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 指定のInputスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」
+のチェック 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) サブグループ別部品情報リストDOMファイル「gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」のファイルチェック 実行
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分けモジュール : 本処理Main()メソッド呼出し
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 本処理(Mainメソッド) 実行
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 正常件数：1
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 異常件数：0
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分けモジュール : 後処理After()メソッド呼出し
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 後処理(Afterメソッド) 実行
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」が正常完了しました。
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 入力スキーマ YAML「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」ファイルを
+解析し、標準転記の表現式を取得します...
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力スキーマ YAML「/workspace/schema/f013_web_catalog_parts_info_illust_dom_acm.yaml」ファイルを
+解析し、標準転記の表現式を取得します...
+[プロセス] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) データレコードのコンバート完了、出力ファイルに「1」件のレコードを追加。
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力ファイル: gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_illust_dom_035103_FDA60_EH4_B21S003_11_11.110_01_ac_20250101_ver0001.parquet
+[情報    ] (NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力レコード件数: 1
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 転記仕様のYAMLファイル「/workspace/transform\transform_spec_130021.yml」の読み込み 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 対象データファイル「gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」の読み込み 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」 取得
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」のロード
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分けモジュール : 前処理Before()メソッド呼出し
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」を開始します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 前処理(Beforeメソッド) 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 引数(JSON)内容の解析
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 指定のInputスキーマファイル「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」のチェック
+実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) サブグループ別部品情報リストDOMファイル「gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」のファイルチェック 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分けモジュール : 本処理Main()メソッド呼出し
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 本処理(Mainメソッド) 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 正常件数：1
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 異常件数：0
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 振り分けモジュール : 後処理After()メソッド呼出し
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 後処理(Afterメソッド) 実行
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「サブグループ別部品情報リストDOMファイルレコード生成」が正常完了しました。
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 「プラグイン振分モジュール」が完了しました。
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 入力スキーマ YAML「/workspace/schema/f013_web_catalog_parts_info_illust_dom_work.yaml」ファイルを解析し、標
+準転記の表現式を取得します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力スキーマ YAML「/workspace/schema/f013_web_catalog_parts_info_illust_dom_acm.yaml」ファイルを解析し、標
+準転記の表現式を取得します...
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) データレコードのコンバート完了、出力ファイルに「1」件のレコードを追加。
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力ファイル: gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/Ac/20250101/FDA60/catalog_parts_info_illust_dom_035103_FDA60_EH4_B21S003_11_11.110_01_ac_20250101_ver0001.parquet
+(NameSpace: market-vehicle-data WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: ) 出力レコード件数: 1
+
+データリネージ実行ログ出力
+
+・データリネージ実行ログテーブル：
+       データリネージ実行ログ：シート「データリネージ実行ログ」の Case 6-2 を参照。
+
+[2025-11-03 19:07:05] [情報    ] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+[2025-11-03 19:07:06]
+[2025-11-03 19:07:06] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+転記仕様のYAMLファイル
+「/workspace/transform\transform_spec_130021.yml」の読み込み 実行
+[2025-11-03 19:07:06] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+[2025-11-03 19:07:06] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+対象データファイル「gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA
+60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」の読み込み
+実行
+[2025-11-03 19:07:07] [情報    ] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「プラグイン振分モジュール」を開始します...
+[2025-11-03 19:07:07] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」 取得
+[2025-11-03 19:07:07] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」のロード
+[2025-11-03 19:07:07] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+振り分けモジュール : 前処理Before()メソッド呼出し
+[2025-11-03 19:07:07] [情報    ] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始
+[2025-11-03 19:07:05] [情報    ] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+[2025-11-03 19:07:06]
+[2025-11-03 19:07:06] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+転記仕様のYAMLファイル
+「/workspace/transform\transform_spec_130021.yml」の読み込み 実行
+[2025-11-03 19:07:06] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+[2025-11-03 19:07:06] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+対象データファイル「gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA
+60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」の読み込み
+実行
+[2025-11-03 19:07:07] [情報    ] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「プラグイン振分モジュール」を開始します...
+[2025-11-03 19:07:07] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」 取得
+[2025-11-03 19:07:07] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」のロード
+[2025-11-03 19:07:07] [プロセス] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+振り分けモジュール : 前処理Before()メソッド呼出し
+[2025-11-03 19:07:07] [情報    ] (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「サブグループ別部品情報リストDOMファイルレコード生成」プラグインを開始
+します...
+"2025-11-03T08:25:41.725309300Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「f013WEBカタログ部品情報＆イラストdom累積作成」を開始します...
+2025-11-03T08:25:42.497493200Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+2025-11-03T08:25:52.985896Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+転記仕様のYAMLファイル
+「/workspace/transform\transform_spec_130021.yml」の読み込み 実行
+2025-11-03T08:25:53.164581900Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+入力・出力ファイルのスキーマ YAML ファイルのダウンロード 実行
+2025-11-03T08:25:53.346637800Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+対象データファイル「gs://b144-cloud-storage-
+yang/CatalogParts/f013/WebEpc/035103/202501/f013_f0002_035130_FDA
+60_EH4_B21S003_11_11.110_01_parts_20250101_ver0001.html」の読み込み
+実行
+2025-11-03T08:25:53.533234400Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「プラグイン振分モジュール」を開始します...
+2025-11-03T08:25:53.670008300Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」 取得
+2025-11-03T08:25:53.840561200Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+プラグイン「f013-subgrp-parts-list-dom-record-gen.dll」のロード
+2025-11-03T08:25:54.972671Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+振り分けモジュール : 前処理Before()メソッド呼出し
+2025-11-03T08:25:55.141024900Z (NameSpace: market-vehicle-data
+WorkFlowName: workflow-01m0013p001004-znp7k-c7r4k ExecuteTaskId: )
+「サブグループ別部品情報リストDOMファイルレコード生成」を開始します...
+
+データリネージ実行ログ：シート「データリネージ実行ログ」の Case 6-2 を参照。
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+
+
+
+
+================================================================================
+ドキュメント: (No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_サブグループ別部品情報リストDOMファイルレコード生成_ケース_V2.pdf (PDF 2)
+ファイル名: (No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_サブグループ別部品情報リストDOMファイルレコード生成_ケース_V2.pdf
+================================================================================
+
+システム名
+
+f013カタログ部品データ作成
+
+機能名
+
+サブグループ別部品情報リストDOMファイルレコード生成
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_サブグループ別部品情報リストDOMファイルレコード生成.xlsxケース
+
+№
+
+大分類
+
+中分類
+
+小分類
+
+テスト条件
+
+仕様
+
+備考
+
+結果
+
+実施日
+
+実施者
+
+エビデンス
+
+1
+1-1
+1-2
+1-3
+
+2
+2-1
+2-2
+
+前提
+累積ツール起動
+
+起動時のパラメータ確認
+データベース接続
+配置ファイル存在チェック
+
+累積の該当 リネージ情報を指定して
+
+部品一覧Excel UT仕様書のCase1-1にて既にテスト済みである
+部品一覧Excel UT仕様書のCase1-2にて既にテスト済みである
+部品一覧Excel UT仕様書のCase1-3にて既にテスト済みである
+
+ここでは正常ケースを1件のみ実施する。
+ここでは正常ケースを1件のみ実施する。
+ここでは正常ケースを1件のみ実施する
+
+リネージのプロセスID、タスクID指定あり
+専用プラグインの指定チェック
+
+部品一覧Excel UT仕様書のCase2-1にて既にテスト済みである
+サブグループ別部品情報リストPDFファイルレコード生成 UT仕様書のCase2-2にて既にテスト済みである
+
+ここでは正常ケースを1件のみ実施する
+ここでは正常ケースを1件のみ実施する
+
+※他の累積プラグインと同じで、ツール起動の基本的な動作は今回テストのポイントじゃなくて、プラグインの呼出と戻ったレコードでParquet作成をポイントにする
+・累積作成_サブグループ別部品情報リストDOMファイルレコード生成（f013-subgrp-parts-list-dom-record-gen.dll の処理）
+
+ここからプラグイン機能
+
+3
+
+データファイル(DOM)からデータ加工（専用ブラグイン経由）
+
+前処理 (Before)
+
+3-1
+3-1-1
+
+3-1-1-1
+
+3-1-1-2
+
+3-1-2
+
+3-1-2-1
+3-1-2-2
+
+3-2
+3-2-1
+3-2-1-1
+
+3-2-1-2
+
+3-2-2
+3-2-2-1
+
+3-2-2-2
+
+3-2-3
+3-2-3-1
+
+3-2-3-2
+
+3-2-4
+3-2-4-1
+
+3-2-4-2
+
+3-3
+
+3-3-1
+
+リネージ設定情報および入力ファイルチェック
+
+「リソース管理」テーブルに、当リネージが使ってるリソースの設定情報チェック
+必須項目のチェック：文字コード（code_page）
+
+文字コード（code_page）が設定の場合
+
+確認事項なく、引き続き処理
+
+文字コード（code_page）が未設定の場合  ※システム系エラー（エラーハンドリングと関係ない）
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理」テーブルにて、文字コード（code_page）の設定がされていません。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理」テーブルにて、文字コード（code_page）の設定がされていません。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理」テーブルにて、文字コード（code_page）の設定がされていません。
+
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+InputスキーマYamlに、下記の項目は必須です
+
+列「f013_car_model」
+列「f013_car_model_classification_code」
+列「f013_main_group_code」
+列「f013_sub_group_code」
+
+InputスキーマYamlに、必須項目存在チェック
+
+列「f013_fig_illust_disp_no」
+
+列「f013_subgrp_parts_list_dom_content」
+
+必須項目はすべて InputスキーマYamlファイルに存在する場合
+確認事項なく、引き続き処理
+必須項目の1つが InputスキーマYamlファイルに存在しない場合  ※システム系エラー（エラーハンドリングと関係ない）
+ExitCode：253
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「xxxx」に、必須項目「xxxx」がないです。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「xxxx」に、必須項目「xxxx」がないです。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「xxxx」の「リソース管理テーブル」にて、指定されたInputスキーマYamlファイル:「xxxx」に、必須項目「xxxx」がないです。
+
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+DOMファイルパスのチェック
+
+入力ファイル命名規則内のマクロ変数の存在チェック
+
+命名規則内のマクロ変数が存在する
+
+確認事項なく、引き続き処理
+
+命名規則内のマクロ変数が存在しない
+
+確認事項なく、引き続き処理
+
+入力ファイル命名規則に必須のマクロ変数が含まれているかのチェック
+
+入力ファイルが存在する
+
+確認事項なく、引き続き処理
+
+入力ファイルが存在しない   ※システム系エラー（エラーハンドリングと関係ない）
+
+ExitCode：252
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「{lineageID}」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「xxxx」に必須マクロ変数「xxxx」がないです。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「{lineageID}」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「xxxx」に必須マクロ変数「xxxx」がないです。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：当リネージID「{lineageID}」の「リソース管理」テーブルにて、指定された入力ファイル命名規則「xxxx」に必須マクロ変数「xxxx」がないです。
+
+データリネージ実行ログ出力
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+入力ファイルの存在チェック
+
+入力ファイルが存在する
+
+確認事項なく、引き続き処理
+
+入力ファイルが存在しない   ※システム系エラー（エラーハンドリングと関係ない）
+
+ExitCode：245
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxx」が見つかりません。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxx」が見つかりません。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxx」が見つかりません。
+
+データリネージ実行ログ出力：
+
+OK
+
+OK
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+①「データリネージ実行ログ」テーブルの各項目と設定内容の確認を追加
+
+OK
+OK
+
+2025/11/3 TH.尚
+2025/11/3 TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+①「データリネージ実行ログ」テーブルの各項目と設定内容の確認を追加
+
+OK
+
+OK
+
+OK
+
+OK
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+①「データリネージ実行ログ」テーブルの各項目と設定内容の確認を追加
+
+OK
+
+OK
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブルの各項目と設定内容の確認を追加
+
+DOMファイル 0 バイトチェック
+
+0バイト以上の場合
+
+確認事項なく、引き続き処理
+
+0バイトの DOMファイルの場合  ※累積処理　ファイルの中身異常（エラーハンドリングと関係ない）
+
+ExitCode：243
+異常終了
+コンソールログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」が0バイトで、累積処理を実行できません。
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」が0バイトで、累積処理を実行できません。
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：対象データファイル「xxxx」が0バイトで、累積処理を実行できません。
+
+データリネージ実行ログ出力：
+
+OK
+
+OK
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+①「データリネージ実行ログ」テーブルの各項目と設定内容の確認を追加
+
+本処理 (Main)
+
+DOMファイルの読み取りおよびInputスキーマ構造データの構築
+
+指定列の値設定
+
+※マクロ変数異常の場合は、Case2-3でチェック済み
+　異常ケースなし
+
+DOMファイル名から
+
+列「f013_car_model」
+列「f013_car_model_classification_code」
+※性能テストのため、10MBのDOMファイルをテスト
+列「f013_main_group_code」
+列「f013_sub_group_code」
+列「f013_fig_illust_disp_no」
+
+DOMファイル内容から
+
+列「f013_subgrp_parts_list_dom_content」
+
+処理異常発生
+
+読み取りに失敗したファイル
+
+3-3-2
+
+3-3-2-1
+3-3-2-1-1
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+ホワイトボックスにしないと、解析の値が正しいかのチェックが見えないため
+此処のチェックは、Test Codeで検証する。
+目視確認の結果は、Case5で確認する。
+
+マクロ変数「!FS_CAR_MODEL!」の値をDOMファイル名から抽出し、当列に設定する
+マクロ変数「!FS_CAR_MODEL_CLSSFN!」の値をDOMファイル名から抽出し、当列に設定する
+マクロ変数「!FS_MAINGRP_CD!」の値をDOMファイル名から抽出し、当列に設定する
+マクロ変数「!FS_SUBGRP_CD!」の値をDOMファイル名から抽出し、当列に設定する
+マクロ変数「!ILLUST_DISP_NO!」の値をDOMファイル名から抽出し、当列に設定する
+
+「リソース管理」テーブルで指定されたエンコーディングでDOMファイルの内容を読み取り、当列に設定する
+
+存在しない文字コードを設定する:utf-9
+
+loglevel:release
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+OK
+
+2025/11/3 TH.尚
+
+OK
+
+2025/11/3 TH.尚
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+
+②LOGメッセージの修正
+
+PTE-010-23.システムテスト仕様書
+
+3-3-2-1-2
+
+loglevel:debug
+
+ExitCode：255
+異常終了
+コンソールログ出力
+
+スタックトレース:出力なし
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力なし
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力あり
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力なし
+
+ローカルログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力あり
+
+クラウドログ出力
+
+ログタイトル： NameSpace + WorkFlowName + ExecuteTaskId
+ログ内容：'utf-9' is not a supported encoding name. For information on defining a custom encoding, see the documentation for the Encoding.RegisterProvider method. (Parameter 'name')
+スタックトレース:出力あり
+データリネージ実行ログ出力：
+
+シート「データリネージ実行ログ」の「データリネージ実行ログ」テーブルの各項目と設定内容を参照。
+
+3-4
+3-4-1
+
+3-4-2
+3-4-2-1
+
+3-4-2-2
+
+3-4-2-3
+
+3-5
+3-5-1
+
+3-5-2
+
+4
+
+4-1
+4-2
+
+5
+5-1
+
+5-1-1
+
+5-1-2
+
+レコードの読み取りと保存（予期せぬ異常を確認）
+
+成功した場合
+
+失敗した場合
+
+後処理 (After)
+
+正常・異常戻り値の確認
+
+ここから、プラグインから戻ったレコードの引き続き処理
+
+データコンバート : レコードのカラム毎に操作
+出力スキーマにコンバートする
+
+Parquetファイルの作成
+
+データ型変換
+データの長さチェック
+
+Parquetファイル出力
+
+最終結果の確認
+
+ファイルのフルパス確認
+
+ファイル内容の確認
+
+5-1-3
+
+性能確認
+
+6
+6-1
+
+6-2
+
+全体の正常系ログ出力確認
+
+出力メッセージ種別確認(loglevel:realse)
+
+出力メッセージ種別確認(loglevel:debug)
+
+DOMファイル名から
+
+列「f013_car_model」
+列「f013_car_model_classification_code」
+列「f013_main_group_code」
+列「f013_sub_group_code」
+列「f013_fig_illust_disp_no」
+
+DOMファイル内容から
+
+列「f013_subgrp_parts_list_dom_content」
+
+メモリ使用量
+CPU 使用量
+実行時間
+
+コンソールログ
+ローカルログ
+クラウドログ
+データリネージ実行ログ
+
+コンソールログ
+ローカルログ
+クラウドログ
+データリネージ実行ログ
+
+確認事項なく、引き続き処理
+
+・エラーハンドリングを「resume」に設定する ExitCode：124
+
+・エラーハンドリングを「skip」に設定する
+
+空のParquetファイルが生成される
+
+ExitCode：124
+空のParquetファイルが生成される
+
+・エラーハンドリングを「terminate」に設定する ExitCode：255
+
+異常終了、Parquetファイルが生成されない
+
+正常完了
+
+異常終了
+
+・0バイトのファイル
+
+・命名規則に必須マクロ変数がない
+
+正常の ExitCode を返却する
+メッセージ情報  を返却する
+
+エラーの ExitCode を返却する
+メッセージ情報  を返却する
+エラーの ExitCode を返却する
+メッセージ情報  を返却する
+
+部品一覧Excel UT仕様書のCase4-1にて既にテスト済みである
+部品一覧Excel UT仕様書のCase4-2にて既にテスト済みである
+
+ここでは正常ケースを1件のみ実施する
+ここでは正常ケースを1件のみ実施する
+
+部品一覧Excel UT仕様書のCase5-1にて既にテスト済みである
+
+ここでは正常ケースを1件のみ実施する
+
+リネージの出力の設定のGCSリポジトリと命名ルールに
+ファイル命名ルールに従って作成されること
+
+マクロ変数「!FS_CAR_MODEL!」の値をDOMファイル名から抽出し、当列に設定する
+マクロ変数「!FS_CAR_MODEL_CLSSFN!」の値をDOMファイル名から抽出し、当列に設定する
+マクロ変数「!FS_MAINGRP_CD!」の値をDOMファイル名から抽出し、当列に設定する
+マクロ変数「!FS_SUBGRP_CD!」の値をDOMファイル名から抽出し、当列に設定する
+マクロ変数「!ILLUST_DISP_NO!」の値をDOMファイル名から抽出し、当列に設定する
+
+「リソース管理」テーブルで指定されたエンコーディングでDOMファイルの内容を読み取り、当列に設定する
+
+処理中の最大メモリ使用量が想定範囲内であること。
+処理中のCPU使用率が想定範囲内であること。
+累積処理の実行時間
+
+出力ログメッセージ確認（メッセージ種別：Info）
+出力ログメッセージ確認（メッセージ種別：Info）
+出力ログメッセージ確認（メッセージ種別：Info）
+出力ログメッセージ確認（実行結果出力）
+
+出力ログメッセージ確認（メッセージ種別：Info）
+出力ログメッセージ確認（メッセージ種別：Info、Process）
+出力ログメッセージ確認（メッセージ種別：Info、Process）
+出力ログメッセージ確認（実行結果出力）
+
+(No.43)単体テスト仕様書_f013カタログ部品データ作成_01.累積作成_サブグループ別部品情報リストDOMファイルレコード生成.xlsxケース
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+OK
+
+2025/11/3 TH.尚
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+②LOGメッセージの修正
+
+①「データリネージ実行ログ」テーブル中の各項目の確認
+
+③ログ出力モード調整チェック
+
+OK
+
+OK
+
+OK
+
+OK
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+OK
+
+OK
+
+2025/11/3 TH.尚
+
+2025/11/3 TH.尚
+
+OK
+
+2025/11/3 TH.尚
+
+OK
+
+2025/11/3 TH.尚
+
+OK
+
+2025/11/3 TH.尚
+
+Copyright(c) 2014 Broadleaf Co.,Ltd.
+
+PTE-010-23.システムテスト仕様書
+
+
+

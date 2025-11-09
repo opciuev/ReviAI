@@ -1,0 +1,80 @@
+Model: gemini-2.5-pro
+Response text: {
+  "rows": [
+    {
+      "requirement_no": "REQ-001",
+      "requirement_content": "0.4 非機能要件のテスト可能性（T4）: 性能（レスポンスタイム）、セキュリティ（権限、アクセス制御）、ユーザビリティ（画面表示崩れ）、可用性（障害・復旧）といった非機能要件が、テスト可能な形で観測可能になっているか。",
+      "evaluation": "△",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 「■テスト観点」 > 「・性能テスト」",
+      "compliance_reason": "性能テストについて「メモリコスト低くて、性能テストをしません」と記載があり、実施しない判断は明記されているが、性能要件そのものや、大量データ投入時の挙動（例：多数のPDFファイルを同時にアップロードした場合など）についての考慮が不足している。セキュリティや可用性に関する観点も記載がない。",
+      "correction_plan": "性能テストを実施しない理由として「メモリコストが低い」は妥当かもしれないが、将来的なデータ量増加を考慮し、最低限のスループット（例：単位時間あたりに処理可能なファイル数）に関する目標値だけでも定義することが望ましい。また、テスト対象外とする非機能要件（セキュリティ、可用性など）を明確に記載すること。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-002",
+      "requirement_content": "1.1 各テストケース（または業務シナリオ）において、「①前提条件」「②操作手順」「③期待結果」が具体的に記述され、因果関係が明確であるか。また、その前提条件が、要件定義書や外部設計書に記載された制約や仕様に基づいているか。",
+      "evaluation": "△",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 「■テスト項目」 > Case01 > No.1-6",
+      "compliance_reason": "期待結果として「※シート「出力ファイル明細_Output」のCase01のように」と外部シートへの参照のみが記載されており、仕様書本体に具体的な確認内容が記述されていない。これにより、仕様書の自己完結性が低く、第三者が期待結果を把握しにくい。",
+      "correction_plan": "期待結果の主要な確認ポイント（例：ParquetファイルにPDFのパス情報が特定のカラムに格納されていること、レコード数が1件であることなど）を仕様書本体にも記載すること。「詳細は別紙『出力ファイル明細_Output』を参照」という形が望ましい。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-003",
+      "requirement_content": "2.11 文体（「です・ます」体と「である」体）が統一されている",
+      "evaluation": "×",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 全体",
+      "compliance_reason": "文書全体で文体が統一されていない。「テスト概要」では説明的な文章、「テスト項目」の期待結果では「〜こと」調が使われている。また、「ケース1にで、仕様を書くべき...」のようなメモ書きと思われる口語的な表現が残っている。",
+      "correction_plan": "文書全体で文体を「である」体または「です・ます」体に統一すること。特に、仕様書としての客観性を保つため、「〜である」「〜こと」で統一することが望ましい。メモ書きは正式なドキュメントからは削除すること。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-004",
+      "requirement_content": "4.1 操作手順の再現性: 第三者でも実行可能なレベルで操作手順が記述されているか",
+      "evaluation": "×",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 「■テスト項目」 > 各Caseの「テスト手順」",
+      "compliance_reason": "テスト手順に「シート「PDFデータ_Input」」「シート「DB設定_Refer」」を参照するよう記載があるが、これらのシートが添付されておらず、具体的なテストデータやDB設定の内容が不明である。これでは第三者がテストを再現することができない。",
+      "correction_plan": "テスト仕様書内に、使用するテストデータの概要（ファイル名、特徴など）とDBの主要な設定値を記載するか、参照するシート自体を仕様書に添付すること。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-005",
+      "requirement_content": "4.6 異常時ログ・エラー出力の検証: エラー発生時のログ出力／エラーメッセージが仕様通りに記録・表示されるか",
+      "evaluation": "〇",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 「■シナリオ」 > Case03, Case04",
+      "compliance_reason": "異常系のテストケース（Case03: 0バイトファイル、Case04: パス長超過）において、期待されるW/Fの終了ステータス（異常終了、警告終了）やエラーコード（243, 120）、CloudLoggingに出力されるべきエラーメッセージが具体的に定義されており、異常系の検証観点が明確である。",
+      "correction_plan": "",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-006",
+      "requirement_content": "4.7 テストの実行方法の明示: 各テストが手動実行か、自動化されたテストコードによる実行かが明確に区別・記述されているか",
+      "evaluation": "△",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 「■テスト項目」",
+      "compliance_reason": "テスト手順の起点となる「PDFファイルがGCSバケットにアップロード」が手動か自動（スクリプト等）か明記されていない。その後のワークフローは自動で実行されると推測できるが、テスト全体の実行方法が不明確である。",
+      "correction_plan": "テスト手順の各ステップについて、手動操作か自動実行かを明記すること。例えば、「手順1（手動）：テスト担当者が指定のPDFファイルをGCSにアップロードする」「手順2（自動）：アップロードをトリガーにArgo Workflowが起動する」のように記述する。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "REQ-007",
+      "requirement_content": "5.2 テスト観点の網羅性: 正常系／異常系・例外系／境界値がバランスよく含まれているか",
+      "evaluation": "〇",
+      "compliance_location": "システムテスト仕様書_f013カタログ部品データ作成_累積作成_サブグループ別部品情報リストPDFファイルレコード生成_ケース_V1.pdf, 「■シナリオ」",
+      "compliance_reason": "正常系（Case01, Case02）に加え、入力データ異常として0バイトファイル（Case03）やファイルパス長超過（Case04）といった複数の異常系シナリオが定義されており、テスト観点の網羅性が高い。",
+      "correction_plan": "",
+      "response_status": "",
+      "response_method": ""
+    }
+  ]
+}
+Candidates: 1
+Usage metadata: cache_tokens_details=None cached_content_token_count=None candidates_token_count=1859 candidates_tokens_details=None prompt_token_count=11632 prompt_tokens_details=[ModalityTokenCount(
+  modality=<MediaModality.TEXT: 'TEXT'>,
+  token_count=11632
+)] thoughts_token_count=4923 tool_use_prompt_token_count=None tool_use_prompt_tokens_details=None total_token_count=18414 traffic_type=None

@@ -1,0 +1,74 @@
+{
+  "rows": [
+    {
+      "requirement_no": "SA-1",
+      "requirement_content": "SystemArchitect: 指摘事項への準拠 (API定義の変更)",
+      "evaluation": "〇",
+      "compliance_location": "API定義",
+      "compliance_reason": "V7からV8にかけてAPIシグネチャが変更されています。特に、BeforeメソッドにLogUtilインスタンスを渡すように変更され、Afterメソッドがout引数でメッセージを返すように修正されています。これは依存性の注入（DI）の考え方を取り入れ、ログ処理を外部から制御可能にする良い変更です。また、戻り値の設計もよりC#の慣例に沿ったものに改善されています。",
+      "correction_plan": "この改善方針を維持してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "SA-2",
+      "requirement_content": "SystemArchitect: 論理トレーサビリティの検証 (処理フローの明確化)",
+      "evaluation": "〇",
+      "compliance_location": "2.1 前処理段階 (Before)の結果判定",
+      "compliance_reason": "V8で「前処理段階（Before）で Error が発生した場合、本処理段階(Main) の実行を スキップ します」という記述が追加されました。これにより、Before→Main→Afterの各段階の連携と異常時の制御フローが明確になり、設計の堅牢性が向上しています。",
+      "correction_plan": "正常系のフローだけでなく、このように異常系のフローを明記するスタイルは、実装時の誤解を防ぐために非常に有効です。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "SA-3",
+      "requirement_content": "SystemArchitect: 機能要件と非機能要件の分離と結合 (チェック項目の削除)",
+      "evaluation": "△",
+      "compliance_location": "1.4 入力ファイルチェック",
+      "compliance_reason": "V7に存在した「1.4.1 入力ファイル名が命名規則に従っているかのチェック」(ExitCode: 244)がV8では削除されています。このチェックが不要になったのか、あるいは別のコンポーネント（例：振分モジュール）に責務が移譲されたのかが不明です。設計変更の意図がドキュメントから読み取れないため、手戻りや予期せぬ不具合のリスクがあります。",
+      "correction_plan": "変更履歴や注釈として、チェック項目を削除した理由を明記してください。例：「本チェックは上位の振分モジュールで実施するため、プラグイン側では不要と判断。」",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-1",
+      "requirement_content": "QAManager: 処理ロジックの具体性評価 (WDT分析)",
+      "evaluation": "△",
+      "compliance_location": "2.2.1 指定列の加工処理",
+      "compliance_reason": "「PDFファイルのファイル名から、指定のマクロ変数で車の情報を取って、指定スキーマレイアウトにコンバートする」という記述は、What(何をするか)は分かりますが、How(どうやるか)が具体性に欠けます。特に「マクロ変数」（例: !FS_CAR_MODEL!）がファイル名のどの部分から、どのようなルール（正規表現など）で抽出されるのかが不明です。これではテスト担当者がファイル名のパターンを網羅したテストデータを作成できません。",
+      "correction_plan": "【ゴールデンケース】\nファイル名の命名規則を具体的に示し、各マクロ変数がどの部分に対応するかを明記してください。\n例：ファイル名形式: `[車両モデル]_[類別コード]_[メイングループ]_[サブグループ].pdf`\n`!FS_CAR_MODEL!` はファイル名の最初の `_` までの部分文字列を抽出する、など。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-2",
+      "requirement_content": "QAManager: 用語と定義の明確化",
+      "evaluation": "△",
+      "compliance_location": "1.3 入力引数の内容チェック, 1.3.1 項目IDチェック",
+      "compliance_reason": "「LineageID」「リソース管理テーブル」「転記仕様 YAML（transformYamlInfoDic）」といった外部の定義に依存する用語が説明なく使用されています。これらの情報がどこで管理されており、どのような構造を持っているのかがこの設計書単体では不明です。テストの前提条件を準備する際に、これらの情報を別途探す必要があり、非効率です。",
+      "correction_plan": "各用語について、参照すべきドキュメント名や管理場所を明記してください。もしくは、この設計書内でテストに必要な範囲で、簡単な構造や役割を説明するセクションを追加してください。例：「リソース管理テーブルの詳細は『共通仕様書_データ管理.xlsx』を参照のこと。」",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-3",
+      "requirement_content": "QAManager: 異常系の網羅性 (ログ出力仕様の変更)",
+      "evaluation": "×",
+      "compliance_location": "1.1 起動ログ情報の出力, 1.3.1 項目IDチェック など",
+      "compliance_reason": "V7ではエラーログがメッセージID（例: CE0020_MissingRequiredItemInSchema）で管理されており、テストの自動化やログ監視ツールでの特定が容易でした。しかしV8では自由なテキスト形式（例: ERROER タイプ： ...）に変更されています。これにより、ログメッセージの文言が将来変更された場合にテストコードや監視設定の修正が必要となり、保守性が低下します。また、`ERROER`というスペルミスも存在します。",
+      "correction_plan": "ログ出力の仕様をV7のメッセージID方式に戻すことを強く推奨します。もしテキスト形式を維持する場合は、出力されるメッセージのテンプレートを固定し、変数部分以外は変更されないことを保証するルールを設けてください。また、`ERROER`は`ERROR`に修正してください。",
+      "response_status": "",
+      "response_method": ""
+    },
+    {
+      "requirement_no": "QA-4",
+      "requirement_content": "QAManager: 異常系の網羅性 (エラーハンドリング)",
+      "evaluation": "〇",
+      "compliance_location": "2.2.2 エラーデータの処理",
+      "compliance_reason": "エラーハンドリングモードとして `resume`, `skip`, `terminate` の3種類が定義され、それぞれの挙動と対応するExitCodeが明記されています。これにより、エラー発生時のシステムの振る舞いが明確になり、テストケースの設計が容易になります。",
+      "correction_plan": "この定義は明確で良いです。維持してください。",
+      "response_status": "",
+      "response_method": ""
+    }
+  ]
+}

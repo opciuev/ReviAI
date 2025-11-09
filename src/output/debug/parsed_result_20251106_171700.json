@@ -1,0 +1,64 @@
+{
+  "rows": [
+    {
+      "requirement_no": "SA-1",
+      "requirement_content": "SystemArchitect: 論理トレーサビリティの検証",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "非対応理由（共通仕様書での一元管理）が合理的かつ受諾可能であるため、v7設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "×",
+      "response_method": "関連要件 は共通仕様書にて一元管理されている。個別のモジュール設計書で重複して定義することは、管理の複雑化を招くため行わない。"
+    },
+    {
+      "requirement_no": "SA-2",
+      "requirement_content": "SystemArchitect: 機能要件と非機能要件の分離と結合",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "非対応理由（上位モジュールの責務であるという設計方針）が合理的かつ受諾可能であるため、v7設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "×",
+      "response_method": "ご指摘の非機能要件（タイムアウト、リトライ）は、本モジュールを呼び出す上位（累積工具）側の責務である。本モジュールはタイムアウト等を自身では管理せず、上位からの要求に従う。"
+    },
+    {
+      "requirement_no": "QA-1",
+      "requirement_content": "QAManager: 処理ロジックの具体性評価 (WDT分析)",
+      "evaluation": "〇",
+      "compliance_location": "V6: 3 プラグイン側の動作をさせて...",
+      "compliance_reason": "非対応理由（共通インターフェースの規約で定義済み）が合理的かつ受諾可能であるため、v7設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "×",
+      "response_method": "「Before→Main→After」の制御フロー は、本モジュールが実装する IFileParserPlugin インターフェースの共通規約である。インターフェースの規約（Beforeが失敗すればMain/Afterは実行されない）を、実装側の設計書に重複して記述することは冗長であるため行わない。"
+    },
+    {
+      "requirement_no": "QA-2",
+      "requirement_content": "QAManager: 用語と定義の明確化",
+      "evaluation": "〇",
+      "compliance_location": "V6とV5のAPI定義全体",
+      "compliance_reason": "非対応理由（V6が正であり、V5はレビュー対象外）が合理的かつ受諾可能であるため、v7設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "×",
+      "response_method": "本レビューの対象はV6 の設計書（acumulate-file-parser-dispatcher） である。V5 は過去のドキュメントであり、V6が唯一の正である。V5のドキュメントを破棄 するかは別途管理の問題であり、本設計書の修正は不要である。"
+    },
+    {
+      "requirement_no": "QA-3",
+      "requirement_content": "QAManager: 異常系の網羅性",
+      "evaluation": "〇",
+      "compliance_location": "全体",
+      "compliance_reason": "非対応理由（指摘された異常ケースは上位モジュールやプラグイン側の責務であるという設計方針）が合理的かつ受諾可能であるため、v7設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "×",
+      "response_method": "ご指摘の異常ケース は本モジュールの責務外である。 1. 「DLLが存在しない」：.NETランタイムがスローするシステムレベルの例外であり、本モジュールの上位（Host）がハンドリングする。 2. 「JSON必須項目欠落」：各プラグイン側のBeforeメソッドが検証する責務を持つ。"
+    },
+    {
+      "requirement_no": "QA-4",
+      "requirement_content": "QAManager: 処理ロジックの具体性評価 (WDT分析) - 「Do」の具体性",
+      "evaluation": "〇",
+      "compliance_location": "V6: 3.3 後処理 (After) の実行, 4.2 最終結果の返却",
+      "compliance_reason": "非対応理由（顧客要求により、Afterメソッドの戻り値をそのままパススルーする仕様であるため）が合理的かつ受諾可能であるため、v7設計書で変更がないことを確認。検証済とする。",
+      "correction_plan": "(検証済)",
+      "response_status": "×",
+      "response_method": "本モジュールの仕様は**「お客様の要求（式样）」に基づき、Afterメソッド が返したExitCodeとjsonMessageをそのまま上位にパススルー（Pass-through）**することである。AI審査員が提案するようなPluginResultオブジェクトでラップする設計は、お客様の要求に反する。本文書「4.2 振分モジュールは、上記3.3の処理結果を累積ツールへ返却する」 に記載の通りであり、修正は不要。"
+    }
+  ]
+}
