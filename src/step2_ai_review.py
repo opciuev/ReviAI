@@ -19,64 +19,83 @@ import json
 from datetime import datetime
 
 
-def convert_pdfs_to_markdown(pdf_paths: List[str]) -> str:
+def convert_files_to_markdown(file_paths: List[str]) -> str:
     """
-    Convert multiple PDF files to Markdown format
+    Convert multiple PDF or Markdown files to combined Markdown format
 
     Args:
-        pdf_paths: List of PDF file paths
+        file_paths: List of PDF or Markdown file paths
 
     Returns:
-        str: Combined Markdown content from all PDFs
+        str: Combined Markdown content from all files
 
     Raises:
-        FileNotFoundError: If any PDF file doesn't exist
+        FileNotFoundError: If any file doesn't exist
         Exception: If conversion fails
     """
     md_converter = MarkItDown()
     combined_markdown = []
 
-    for idx, pdf_path in enumerate(pdf_paths, 1):
-        if not Path(pdf_path).exists():
-            raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+    for idx, file_path in enumerate(file_paths, 1):
+        if not Path(file_path).exists():
+            raise FileNotFoundError(f"File not found: {file_path}")
 
-        logger.info(f"Converting PDF to Markdown: {Path(pdf_path).name}")
+        filename = Path(file_path).name
+        file_ext = Path(file_path).suffix.lower()
+
+        logger.info(f"Processing file: {filename}")
 
         try:
-            result = md_converter.convert(pdf_path)
-            markdown_content = result.text_content
+            # Check if it's a Markdown file
+            if file_ext == '.md':
+                # Read Markdown file directly
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    markdown_content = f.read()
+                logger.info(f"Read Markdown file: {filename}")
+            else:
+                # Convert PDF to Markdown
+                result = md_converter.convert(file_path)
+                markdown_content = result.text_content
+                logger.info(f"Converted PDF to Markdown: {filename}")
 
             # Detect version from filename (V6, V7, etc.)
-            filename = Path(pdf_path).name
             version_marker = ""
             if "V6" in filename.upper() or "_6" in filename:
                 version_marker = " (前回の設計書 V6)"
             elif "V7" in filename.upper() or "_7" in filename:
                 version_marker = " (今回の設計書 V7)"
             else:
-                version_marker = f" (PDF {idx})"
+                version_marker = f" (Document {idx})"
 
             # Create clear document boundary with version info
-            pdf_section = f"""
+            file_section = f"""
 {'='*80}
-ドキュメント: {Path(pdf_path).stem}.pdf{version_marker}
+ドキュメント: {Path(file_path).stem}{file_ext}{version_marker}
 ファイル名: {filename}
 {'='*80}
 
 {markdown_content}
 """
-            combined_markdown.append(pdf_section)
-            logger.info(f"Successfully converted: {Path(pdf_path).name}{version_marker}")
+            combined_markdown.append(file_section)
+            logger.info(f"Successfully processed: {filename}{version_marker}")
 
         except Exception as e:
-            logger.error(f"Failed to convert {pdf_path}: {str(e)}")
-            raise Exception(f"PDF conversion failed for {Path(pdf_path).name}: {str(e)}")
+            logger.error(f"Failed to process {file_path}: {str(e)}")
+            raise Exception(f"File processing failed for {filename}: {str(e)}")
 
     # Combine all markdown content with clear separators
     full_markdown = "\n\n".join(combined_markdown)
-    logger.info(f"Combined {len(pdf_paths)} PDFs into Markdown ({len(full_markdown)} characters)")
+    logger.info(f"Combined {len(file_paths)} files into Markdown ({len(full_markdown)} characters)")
 
     return full_markdown
+
+
+def convert_pdfs_to_markdown(pdf_paths: List[str]) -> str:
+    """
+    Legacy function for backward compatibility.
+    Redirects to convert_files_to_markdown.
+    """
+    return convert_files_to_markdown(pdf_paths)
 
 
 def review_with_gemini(
@@ -89,7 +108,7 @@ def review_with_gemini(
     Perform AI review using Gemini Pro
 
     Args:
-        pdf_paths: List of PDF file paths to review
+        pdf_paths: List of PDF or Markdown file paths to review
         prompt_template: Prompt template content
         api_key: Gemini API key
         model: Model name (default: gemini-2.5-pro)
@@ -98,27 +117,27 @@ def review_with_gemini(
         ReviewTable: Structured review results
 
     Raises:
-        FileNotFoundError: If PDF file doesn't exist
+        FileNotFoundError: If file doesn't exist
         ValueError: If API key is invalid
         Exception: If API call fails
     """
     # Validate API key
-    if not api_key or api_key == "YOUR_API_KEY_HERE":
+    if not api_key or api_key == "YOUR_API_KEY_HERE" or api_key == "YOUR_GEMINI_API_KEY_HERE":
         raise ValueError("Invalid API key. Please configure your Gemini API key in config.ini")
 
-    # Validate PDF files exist
-    for pdf_path in pdf_paths:
-        if not Path(pdf_path).exists():
-            raise FileNotFoundError(f"PDF file not found: {pdf_path}")
+    # Validate files exist
+    for file_path in pdf_paths:
+        if not Path(file_path).exists():
+            raise FileNotFoundError(f"File not found: {file_path}")
 
-    logger.info(f"Starting AI review with {len(pdf_paths)} PDF files")
+    logger.info(f"Starting AI review with {len(pdf_paths)} files")
     logger.info(f"Using model: {model}")
 
     try:
-        # Convert PDFs to Markdown
-        logger.info("Converting PDFs to Markdown format...")
-        markdown_content = convert_pdfs_to_markdown(pdf_paths)
-        logger.info(f"PDF conversion completed. Total content length: {len(markdown_content)} characters")
+        # Convert files to Markdown
+        logger.info("Processing files to Markdown format...")
+        markdown_content = convert_files_to_markdown(pdf_paths)
+        logger.info(f"File processing completed. Total content length: {len(markdown_content)} characters")
 
         # Create debug directory
         debug_dir = Path("./output/debug")

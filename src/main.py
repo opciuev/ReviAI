@@ -69,7 +69,7 @@ class DragDropListWidget(QListWidget):
     def __init__(self, parent=None, file_filter="*"):
         super().__init__(parent)
         self.setAcceptDrops(True)
-        self.file_filter = file_filter  # e.g., ".pdf"
+        self.file_filter = file_filter  # e.g., ".pdf", or list like [".pdf", ".md"]
         self.parent_widget = parent
 
     def dragEnterEvent(self, event: QDragEnterEvent):
@@ -83,9 +83,17 @@ class DragDropListWidget(QListWidget):
         if files:
             # Filter by extension
             if self.file_filter != "*":
-                valid_files = [f for f in files if f.lower().endswith(self.file_filter.lower())]
+                # Support both single string and list of extensions
+                if isinstance(self.file_filter, str):
+                    valid_files = [f for f in files if f.lower().endswith(self.file_filter.lower())]
+                    supported_formats = self.file_filter
+                else:  # List of extensions
+                    valid_files = [f for f in files
+                                   if any(f.lower().endswith(ext.lower()) for ext in self.file_filter)]
+                    supported_formats = ", ".join(self.file_filter)
             else:
                 valid_files = files
+                supported_formats = "*"
 
             if valid_files:
                 # Add valid files to parent's file list
@@ -95,7 +103,7 @@ class DragDropListWidget(QListWidget):
                 QMessageBox.warning(
                     self,
                     "エラー",
-                    f"対応していないファイル形式です\n\n対応形式: {self.file_filter}"
+                    f"対応していないファイル形式です\n\n対応形式: {supported_formats}"
                 )
 
 
@@ -983,8 +991,8 @@ class Step2Page(QWidget):
 
         layout.addLayout(pdf_label_layout)
 
-        # Use DragDropListWidget for drag & drop support
-        self.pdf_list = DragDropListWidget(parent=self, file_filter=".pdf")
+        # Use DragDropListWidget for drag & drop support (PDF and MD files)
+        self.pdf_list = DragDropListWidget(parent=self, file_filter=[".pdf", ".md"])
         self.pdf_list.setMaximumHeight(120)
         self.pdf_list.setSelectionMode(QListWidget.SingleSelection)
         layout.addWidget(self.pdf_list)
@@ -1139,21 +1147,23 @@ class Step2Page(QWidget):
         self.update_pdf_list()
 
     def add_pdf_files(self):
-        """Add PDF files manually"""
+        """Add PDF or Markdown files manually"""
         file_paths, _ = QFileDialog.getOpenFileNames(
             self,
-            "旧バージョンPDFファイルを選択",
+            "PDFまたはMarkdownファイルを選択",
             "./output/pdfs",
-            "PDF Files (*.pdf)"
+            "Supported Files (*.pdf *.md);;PDF Files (*.pdf);;Markdown Files (*.md);;All Files (*.*)"
         )
         if file_paths:
             # Add to existing list (avoid duplicates)
+            added_count = 0
             for path in file_paths:
                 if path not in self.pdf_files:
                     self.pdf_files.append(path)
+                    added_count += 1
 
             self.update_pdf_list()
-            logger.info(f"Added {len(file_paths)} PDF files manually")
+            logger.info(f"Added {added_count} files manually")
 
     def add_dropped_files(self, file_paths):
         """Handle files dropped on PDF list"""
